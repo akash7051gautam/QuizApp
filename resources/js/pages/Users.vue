@@ -153,13 +153,13 @@
 
     methods: {
       initialize() {
-
         axios.get('/api/users').then(response => {
           this.tableData = response.data.data;
+          console.log(this.tableData);
         });
 
-        axios.get('/api/roles').then(response=>this.allRoles=response.data.data);
-        axios.get('/api/permissions').then(response=>this.allPermissions=response.data.data);
+         axios.get('/api/roles').then(response=>this.allRoles=response.data.data);
+         axios.get('/api/permissions').then(response=>this.allPermissions=response.data.data);
       },
 
       editItem(item) {

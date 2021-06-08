@@ -106,6 +106,7 @@
     methods: {
       initialize() {
         axios.get('/api/permissions').then(response => {
+            console.log('Akash Gautam',response);
           this.tableData = response.data.data;
           this.allPermissions=this.tableData;
         });

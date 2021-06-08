@@ -42,6 +42,8 @@ import Users from './pages/Users'
 import Roles from './pages/Roles'
 import Permissions from './pages/Permissions'
 import Activities from './pages/Activities'
+import ImagePath from './img/avtar.jpg'
+
 
 const routes = [
   {

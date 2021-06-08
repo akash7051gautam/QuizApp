@@ -28,7 +28,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return RoleResource::collection(Role::all());
+        $role = Role::whereNotIn('name', ['Admin'])->get();
+        return RoleResource::collection($role);
     }
 
 

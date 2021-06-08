@@ -16,7 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return UserResource::collection(User::all());
+        $users = User::where(['is_admin'=>false])->get();
+        return  UserResource::collection($users);
     }
 
 

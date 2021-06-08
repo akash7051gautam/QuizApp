@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-app id="inspire" dark>
+    <v-app id="inspire">
       <v-navigation-drawer clipped fixed v-model="drawer" app>
         <sidebar></sidebar>
       </v-navigation-drawer>
@@ -17,7 +17,7 @@
         </v-container>
       </v-content>
       <v-footer app fixed>
-        <span>&copy; 2019</span>
+        <span>&copy; {{ new Date().getFullYear() }}</span>
       </v-footer>
     </v-app>
   </div>
@@ -30,8 +30,8 @@ import Navbar from "./_navbar";
 export default {
   components: { Sidebar, Navbar },
   data: () => ({
-    drawer: null
+    drawer: true
   }),
-  props: ["user"]
+  props: ["user"],
 };
 </script>

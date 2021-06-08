@@ -29,7 +29,7 @@
     <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
       <v-btn icon large flat slot="activator">
         <v-avatar size="30px">
-          <img src="https://via.placeholder.com/150" alt="Michael Wang">
+          <img :src="imagePath" alt="Michael Wang">
         </v-avatar>
       </v-btn>
       <v-list class="pa-0">
@@ -56,12 +56,16 @@
 
 
 <script>
+
+import ImagePath from '../img/avtar.jpg'
+
 export default {
   props: ["user"],
   data: () => ({
     drawer: null,
     allNotifications: [],
     unreadNotifications: [],
+    imagePath:''
   }),
   props: ["user"],
   watch:{
@@ -74,7 +78,9 @@ export default {
 
   methods: {
     logout() {
-      axios.post("/logout").then(response => window.location.reload());
+      axios.post("/logout").then(
+        response => window.location.reload()
+      );
     },
     markAsRead() {
       axios.get("/mark-all-read/" + this.user.id).then(response=>{
@@ -89,7 +95,7 @@ export default {
     this.unreadNotifications =  this.allNotifications.filter(notification => {
         return notification.read_at == null;
       });
-
+    this.imagePath = ImagePath 
     // Echo.private("App.User." + this.user.id).notification(notification => {
     //   this.allNotifications.unshift(notification.notification);
     // });
