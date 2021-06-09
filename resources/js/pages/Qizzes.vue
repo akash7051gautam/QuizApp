@@ -1,7 +1,7 @@
 <template>
-    <div v-if="$auth.isAdmin()">
+    <div>
         <v-toolbar dark flat color="grey-lighten">
-            <v-toolbar-title>Users</v-toolbar-title>
+            <v-toolbar-title>Quiz</v-toolbar-title>
             <v-divider
                     class="mx-2"
                     inset
@@ -10,7 +10,7 @@
             <v-spacer></v-spacer>
             
             <v-dialog v-model="dialog" max-width="700px">
-                <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
+                <v-btn slot="activator" color="primary" dark class="mb-2">New Quiz</v-btn>
                 <v-card>
                     <v-card-title>
                         <span class="headline">{{ formTitle }}</span>
@@ -22,38 +22,15 @@
                                 <v-flex xs12 >
                                     <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
                                 </v-flex>
-                                <v-flex xs12 >
-                                    <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
-                                </v-flex>
-
-                                <v-flex xs12 >
-                                    <v-text-field v-model="editedItem.password" label="password"></v-text-field>
-                                </v-flex>
-
-                                <v-flex xs12 >
-                                    <v-text-field v-model="editedItem.confirm_password" label="Confirm Password"></v-text-field>
-                                </v-flex>
 
                                 <v-flex xs12>
-                                    <h3>Roles</h3>
+                                    <h3>Status</h3>
                                     <v-select
-                                            v-model="editedItem.role"
-                                            :items="allRoles"
-                                            label="Roles"
-                                            item-text="name"
+                                            v-model="editedItem.status"
+                                            :items="allStatus"
+                                            label="Status"
+                                            item-text="status"
                                             return-object
-                                            chips
-                                    ></v-select>
-                                </v-flex>
-
-                                <v-flex xs12>
-                                    <v-select
-                                            v-model="editedItem.permissions"
-                                            :items="allPermissions"
-                                            label="Permissions"
-                                            item-text="name"
-                                            return-object
-                                            multiple
                                             chips
                                     ></v-select>
                                 </v-flex>
@@ -77,9 +54,7 @@
         >
             <template slot="items" slot-scope="props">
                 <td>{{ props.item.name }}</td>
-                <td class="text-xs-right">{{ props.item.email }}</td>
-                <td class="text-xs-right" v-if="props.item.role">{{ props.item.role.name }}</td>
-                <td class="text-xs-right" v-else>n/a</td>
+                <td class="text-xs-right">{{ props.item.status }}</td>
                 <td class="text-xs-right">{{ props.item.created_at }}</td>
                 <td class="justify-center layout px-0">
                     <v-icon
@@ -109,28 +84,23 @@
     data: () => ({
       dialog: false,
       headers: [
-        {text: 'Username', value: 'name'},
-        {text: 'Email', value: 'email'},
-        {text: 'Role', value: 'role'},
+        {text: 'Quizzes', value: 'name'},
+        {text: 'Status', value: 'status'},
         {text: 'Created', value: 'created_at'},
         {text: 'Actions', value: 'name', sortable: false},
       ],
       tableData: [],
       editedIndex: -1,
-      allRoles:[],
+      allStatus:[],
       allPermissions:[],
       editedItem: {
         name: '',
-        email: '',
-        role:{},
-        permissions:[],
+        status: '',
         created_at: '',
       },
       defaultItem: {
         name: '',
-        email: '',
-        role:{},
-        permissions:[],
+        status: '',
         created_at: '',
       },
 
@@ -138,7 +108,7 @@
 
     computed: {
       formTitle() {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
+        return this.editedIndex === -1 ? 'New Quiz' : 'Edit Quiz';
       },
     },
 
@@ -154,16 +124,14 @@
 
     methods: {
       initialize() {
-        axios.get('/api/users').then(response => {
-          this.tableData = response.data.data;
-          console.log(this.tableData);
+        axios.get('/api/quizzes').then(response => {
+            this.tableData = response.data.data;
+            this.allStatus = Object.assign(['Open','In Design']);
+            console.log(this.allStatus);
         });
-
-         axios.get('/api/roles').then(response=>this.allRoles=response.data.data);
-         axios.get('/api/permissions').then(response=>this.allPermissions=response.data.data);
       },
 
-      editItem(item) {
+      editItem(item) {  
         this.editedIndex = this.tableData.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialog = true;
@@ -171,9 +139,9 @@
 
       deleteItem(item) {
         const index = this.tableData.indexOf(item);
-        confirm('Are you sure you want to delete this item?') && this.tableData.splice(index, 1);
+        confirm('Are you sure you want to delete this quiz?') && this.tableData.splice(index, 1);
 
-        axios.delete('/api/users/'+item.id).then(response=>console.log(response.data))
+        axios.delete('/api/quizzes/'+item.id).then(response=>console.log(response.data))
 
       },
 
@@ -186,14 +154,13 @@
       },
 
       save() {
-        if (this.editedIndex > -1) {
-          Object.assign(this.tableData[this.editedIndex], this.editedItem);
-
-          axios.put('/api/users/'+this.editedItem.id,this.editedItem).then(response=>console.log(response.data));
+        if (this.editedIndex > -1) { 
+         var test = Object.assign(this.tableData[this.editedIndex], this.editedItem);
+          axios.put('/api/quizzes/'+this.editedItem.id,this.editedItem).then(response=>console.log(response.data));
         } else {
           this.tableData.push(this.editedItem);
 
-          axios.post('/api/users/',this.editedItem).then(response=>console.log(response.data));
+          axios.post('/api/quizzes/',this.editedItem).then(response=>console.log(response.data));
         }
         this.close();
       },

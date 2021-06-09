@@ -42,6 +42,7 @@ import Users from './pages/Users'
 import Roles from './pages/Roles'
 import Permissions from './pages/Permissions'
 import Activities from './pages/Activities'
+import Qizzes from './pages/Qizzes'
 import ImagePath from './img/avtar.jpg'
 
 
@@ -69,7 +70,11 @@ const routes = [
   {
       path: '/admin/activities',
       component: Activities
-  }
+  },
+    {
+        path: '/admin/quiz',
+        component: Qizzes
+    }
 ];
 
 const router = new VueRouter({
