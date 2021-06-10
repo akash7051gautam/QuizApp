@@ -57,6 +57,13 @@
                 <td class="text-xs-right">{{ props.item.status }}</td>
                 <td class="text-xs-right">{{ props.item.created_at }}</td>
                 <td class="justify-center layout px-0">
+                    <v-icon 
+                      small
+                      class="mr-2"
+                      @click="previewItem(props.item)"
+                    >
+                      visibility
+                    </v-icon>
                     <v-icon
                             small
                             class="mr-2"
@@ -164,6 +171,10 @@
         }
         this.close();
       },
+
+      previewItem(item){
+        this.$router.push('/admin/qizzview')
+      }
     },
   };
 </script>

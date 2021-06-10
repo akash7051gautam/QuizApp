@@ -11,10 +11,11 @@ window.Vue = require('vue');
 
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
+import CKEditor from 'ckeditor4-vue';
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
-
+Vue.use( CKEditor );
 import 'vuetify/dist/vuetify.min.css'
 
 
@@ -43,6 +44,8 @@ import Roles from './pages/Roles'
 import Permissions from './pages/Permissions'
 import Activities from './pages/Activities'
 import Qizzes from './pages/Qizzes'
+import QizzesView from './pages/QizzesView'
+import AddQuestion from './pages/AddQuestion'
 import ImagePath from './img/avtar.jpg'
 
 
@@ -74,6 +77,14 @@ const routes = [
     {
         path: '/admin/quiz',
         component: Qizzes
+    },
+    {
+        path: '/admin/qizzview',
+        component: QizzesView
+    },
+    {
+        path: '/admin/question',
+        component: AddQuestion
     }
 ];
 
