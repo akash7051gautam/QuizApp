@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UsersTableSeeder::class);
         //$this->call(AdminSeeder::class);
+        \App\quiz::factory(10)->create();
     }
 }

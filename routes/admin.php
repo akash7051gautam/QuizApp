@@ -5,9 +5,6 @@ use Illuminate\Http\Request;
 Route::apiResource('users', 'AdminApi\UserController');
 Route::apiResource('roles', 'AdminApi\RoleController');
 Route::apiResource('permissions', 'AdminApi\PermissionController');
-Route::apiResource('quizzes', 'AdminApi\QuizController');
-
-
 Route::apiResource('blogs', 'BlogController')->middleware('auth');
 
 Route::post('blogs/{blog}/update-image', 'BlogController@updateFeaturedImage')->middleware('auth');

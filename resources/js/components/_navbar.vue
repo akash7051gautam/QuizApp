@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app fixed clipped-left>
     <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-    <v-toolbar-title>Admin Panel</v-toolbar-title>
+    <v-toolbar-title>Laravel Vue Admin</v-toolbar-title>
     <v-spacer></v-spacer>
 
     <v-menu
@@ -95,7 +95,7 @@ export default {
     this.unreadNotifications =  this.allNotifications.filter(notification => {
         return notification.read_at == null;
       });
-    this.imagePath = ImagePath
+    this.imagePath = ImagePath 
     // Echo.private("App.User." + this.user.id).notification(notification => {
     //   this.allNotifications.unshift(notification.notification);
     // });

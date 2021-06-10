@@ -4,7 +4,6 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Auth;
 
 class Handler extends ExceptionHandler
 {
@@ -47,10 +46,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {
-            Auth::guard('admin')->logout();
-            return abort('403');
-        }
         return parent::render($request, $exception);
     }
 }

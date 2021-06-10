@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/mark-all-read/{user}', function (User $user) { 
+Route::get('/mark-all-read/{user}', function (User $user) {
     $user->unreadNotifications->markAsRead();
     return response(['message'=>'done', 'notifications'=>$user->notifications]);
 });
@@ -30,5 +30,4 @@ Route::post('/logout', 'Auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::any('/admin/{any?}', 'AdminController@index')->where('any','.*')->middleware(
-    ['auth:admin','permission:ManageUser','role:Organization']);
+Route::any('/admin/{any?}', 'AdminController@index')->where('any','.*')->middleware('auth:admin');

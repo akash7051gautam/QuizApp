@@ -9,7 +9,7 @@
       </v-list-tile-content>
     </v-list-tile>
 
-    <v-list-group v-if="$auth.isAdmin()" no-action>
+    <v-list-group no-action>
       <v-list-tile slot="activator">
         <v-list-tile-action>
           <v-icon>account_circle</v-icon>
@@ -28,7 +28,7 @@
         </v-list-tile-content>
       </v-list-tile>
 
-      <!-- <v-list-tile to="/admin/roles">
+      <v-list-tile to="/admin/roles">
         <v-list-tile-action>
           <v-icon>account_circle</v-icon>
         </v-list-tile-action>
@@ -44,17 +44,8 @@
         <v-list-tile-content>
           <v-list-tile-title>Permissions</v-list-tile-title>
         </v-list-tile-content>
-      </v-list-tile> -->
+      </v-list-tile>
     </v-list-group>
-
-    <v-list-tile to="/admin/quiz">
-      <v-list-tile-action>
-        <v-icon>info</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title>Quiz</v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
 
     <v-list-tile to="/admin/activities">
       <v-list-tile-action>

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="$auth.isAdmin()">
+    <div>
         <v-toolbar dark flat color="grey-lighten">
             <v-toolbar-title>Users</v-toolbar-title>
             <v-divider
@@ -8,7 +8,6 @@
                     vertical
             ></v-divider>
             <v-spacer></v-spacer>
-            
             <v-dialog v-model="dialog" max-width="700px">
                 <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
                 <v-card>

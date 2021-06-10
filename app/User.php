@@ -2,15 +2,14 @@
 
 namespace App;
 
-use App\Quiz;
 use App\Notifications\UserRegistered;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Support\Facades\Notification;
-use Spatie\Activitylog\Traits\CausesActivity;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Notification;
+use Spatie\Activitylog\Traits\CausesActivity;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -45,11 +44,6 @@ class User extends Authenticatable
     public function blogs()
     {
         return $this->hasMany(Blog::class, 'author_id');
-    }
-
-    public function quiz()
-    {
-        return $this->hasMany(Quiz::class, 'author_id');
     }
 
 }
