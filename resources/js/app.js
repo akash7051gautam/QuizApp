@@ -12,10 +12,13 @@ window.Vue = require('vue');
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import CKEditor from 'ckeditor4-vue';
+import Vuelidate from 'vuelidate'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.use( CKEditor );
+Vue.use(Vuelidate)
+
 import 'vuetify/dist/vuetify.min.css'
 
 
@@ -50,30 +53,30 @@ import ImagePath from './img/avtar.jpg'
 
 
 const routes = [
-  {
-      path: '/admin/',
-      component: Dashboard
-  },
-  {
-      path: '/admin/users',
-      component: Users
-  },
-  {
-      path: '/admin/roles',
-      component: Roles
-  },
-  {
-      path: '/admin/permissions',
-      component: Permissions
-  },
-  {
-      path: '/admin/settings',
-      component: Settings
-  },
-  {
-      path: '/admin/activities',
-      component: Activities
-  },
+    {
+        path: '/admin/',
+        component: Dashboard
+    },
+    {
+        path: '/admin/users',
+        component: Users
+    },
+    {
+        path: '/admin/roles',
+        component: Roles
+    },
+    {
+        path: '/admin/permissions',
+        component: Permissions
+    },
+    {
+        path: '/admin/settings',
+        component: Settings
+    },
+    {
+        path: '/admin/activities',
+        component: Activities
+    },
     {
         path: '/admin/quiz',
         component: Qizzes
@@ -83,7 +86,7 @@ const routes = [
         component: QizzesView
     },
     {
-        path: '/admin/question',
+        path: '/admin/question/:id',
         component: AddQuestion
     }
 ];

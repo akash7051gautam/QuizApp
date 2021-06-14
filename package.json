@@ -29,6 +29,7 @@
         "laravel-echo": "^1.5.3",
         "pusher-js": "^4.4.0",
         "vue-router": "^3.0.2",
+        "vuelidate": "^0.7.6",
         "vuetify": "^1.4.1"
     }
 }

@@ -1,28 +1,28 @@
 <template>
     <div>
-        
-        <div class="card" style="width: 50rem;">
+        <div class="card my-3" v-for="(page,index) in pages" style="width: 50rem;">
             <div class="card-header">
-                {{pages[0].header}}
+                Page {{index+1}}
+                <button v-if="!page.options" type="button" class="close" aria-label="Close"  @click="removePage(index, pages)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="card-body">
                 <p class="m-4">
-                    {{pages[0].question}}
+                    <strong>{{page.question}}</strong>
                 </p>
-                <strong class="mx-4">Options: </strong>
-                <div class="card m-4">
+                <strong class="mx-4" v-if="page.options">Options: </strong>
+                <div class="card m-4" v-if="page.options">
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            <div  v-for="(page, index) in pages">
+                            <!-- <div  v-for="(page, index) in pages"> -->
                                 <div  v-for="(option, index) in page.options">
-                                    
                                      <li class="list-group-item">
-
                                         <v-icon v-if="option.is_correct" small color="success mr-1">done</v-icon>
-                                        {{option.option}}
+                                            {{option.option}}
                                      </li>
                                 </div>
-                            </div>
+                            <!-- </div> -->
                         </ul>
                     </div>
                 </div>
@@ -41,47 +41,33 @@
 <script>
 export default {
     data: ()=>({
-        pageNumebr:2,
+        pageNumebr:1,
         pages: [
             {
-                header: 'Page 1',
-                question: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, aspernatur quo. Libero debitis dolor illum pariatur ducimus placeat aspernatur necessitatibus inventore omnis eos minima in cum et, natus ad reprehenderit?',
-                options: [
-                    {option:'lorem ipsem',is_correct:false},
-                    {option:'lorem ipsem',is_correct:false},
-                    {option:'lorem ipsem',is_correct:true},
-                    {option:'lorem ipsem',is_correct:false}
-                ]
+                header: '',
+                question: "",
+                options: null
             },
         ],
         htmlArray: [],
-        html:''
+        html:'',
+        submitStatus: null
     }),
-
     methods: {
-        
         addPage(){
-            let i = this.pageNumebr++;
-            this.html = `<div class="card" style="width: 50rem;">
-                            <div class="card-header">
-                                Page ${i++} 
-                            </div>
-                            <div class="card-body">
-                                <p class="m-4">
-                                
-                                </p>
-                                <button class="btn btn-success mx-4" @click="addQuestion()">Add Item</button>
-                            </div>
-                        </div>`;
+            let newPage = {
+                header: 'Page '+this.pageNumebr++,
+                question: null,
+                options:null
+            };
 
-            this.htmlArray.push(this.html);
-            this.span(this.htmlArray);
+            this.pages.push(newPage);
         },
-        span(html) {
-            return html;
+        removePage(index, fieldType){
+            fieldType.splice(index, 1);
         },
         addQuestion(){
-            this.$router.push('/admin/question')
+            this.$router.push(`/admin/question/${this.pageNumebr}`)
         }
     }
 }

@@ -3,16 +3,17 @@
 namespace App;
 
 use App\Quiz;
+use App\Question;
 use App\Notifications\UserRegistered;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Facades\Notification;
 use Spatie\Activitylog\Traits\CausesActivity;
+
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -74,5 +75,9 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function question(){
+        return $this->hasMany(Question::class,'user_id');
     }
 }
