@@ -17,3 +17,4 @@ Route::get('activities/{userId?}', 'AdminApi\ActivityController@index');
 
 Route::apiResource('questions', 'AdminApi\QuestionController');
 Route::apiResource('answers', 'AdminApi\AnswerController');
+Route::apiResource('users','AdminApi\UserController');
