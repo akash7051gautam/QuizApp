@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\AdminApi;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UserAnswerResource;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\UserAnswer;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\UserAnswerResource;
+
 
 class UserAnswerController extends Controller
 {
@@ -17,7 +19,9 @@ class UserAnswerController extends Controller
      */
     public function index()
     {
-        //
+        // return Auth::user()->id;
+        return UserAnswerResource::collection(UserAnswer::latest()->get());
+        ;
     }
 
     /**
@@ -39,17 +43,16 @@ class UserAnswerController extends Controller
     public function store(Request $request)
     {
         $data=Validator::make($request->all(),[
-          'user_id'=>'required',
           'question_id'=>'required',
           'answer_type'=>'required',
           'single_choice'=>'required',
           'multiple_choice'=>'required'
         ]);
-        if($data->failes())
+        if($data->fails())
         {
-            return response(['status'=>'error','message'=>$data->errors()->all()]);
+            return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
-
+    // return Auth::user();
      $input=UserAnswer::create($request->all());
      return new UserAnswerResource($input);
     }
@@ -62,7 +65,9 @@ class UserAnswerController extends Controller
      */
     public function show($id)
     {
-        //
+        $data=UserAnswer::find($id);
+        return new UserAnswerResource($data);
+        // return $id;
     }
 
     /**
@@ -85,7 +90,9 @@ class UserAnswerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // return Auth::user();
+        UserAnswer::find($id)->update($request->all());
+        return response(['status'=>'Updated Successfully'],200);
     }
 
     /**
@@ -96,6 +103,7 @@ class UserAnswerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        UserAnswer::find($id)->delete();
+        return response(['status' => 'error', 'message' => "User Answer has been deleted", 'data' => []], 201);
     }
 }

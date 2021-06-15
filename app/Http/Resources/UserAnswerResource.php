@@ -16,6 +16,7 @@ class UserAnswerResource extends JsonResource
     {
         // return parent::toArray($request);
         return [
+            'id'=>$this->id,
             'user_id'=>$this->user_id,
             'question_id'=>$this->question_id,
             'answer_type'=>$this->answer_type,
