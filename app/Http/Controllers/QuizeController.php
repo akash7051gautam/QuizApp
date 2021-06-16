@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OptionResource;
-use App\Option;
-use App\Question;
+use App\Http\Resources\QuizeResource;
+use App\Quize;
 use Illuminate\Http\Request;
 use Validator;
 
-class OptionController extends Controller
+class QuizeController extends Controller
 {
     public function index()
     {
-        $data = Question::with(['option'])->latest()->get();
-        return $data;
+        $data = Quize::paginate(5);
+        return QuizeResource::collection($data);
     }
 /**
      * Show the form for creating a new resource.
@@ -34,30 +33,27 @@ class OptionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'option'=>'required',
-            'question_id'=>'required',
-            'is_correct'=>'required'
+            'name' => 'required|unique:quizes,name',
+            'status' => 'required'
         ]);
         if ($validator->fails()) {
             return  response(['status' => 'error', 'message' => $validator->errors()->all(), 'data' => []], 400);
         }
-
-        $data= Option::create($request->all());
-        return new OptionResource($data);
+        $data= Quize::create($request->all());
+        return new QuizeResource($data);
     }
-/**
+  /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-
     public function show($id)
     {
-        $data = Option::findOrFail($id);
-        return new OptionResource($data);
+        $data = Quize::findOrFail($id);
+        return new QuizeResource($data);
     }
-/**
+ /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -75,25 +71,22 @@ class OptionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-
-    
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'option'=>'required|unique:options,option,'.$id,
-            'question_id'=>'required',
-            'is_correct'=>'required'
+            'name' => 'required|unique:quizes,name,' . $id,
+            'status' => 'required'
         ]);
         if ($validator->fails()) {
             return  response(['status' => 'error', 'message' => $validator->errors()->all(), 'data' => []], 400);
         }
 
-        Option::find($id)->update($request->all());
+        Quize::find($id)->update($request->all());
         return response()->json(['message'=>'success'],200);
     }
 
-  /**
-     * Delete the specified resource in storage.
+    /**
+     *Delete the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -102,7 +95,8 @@ class OptionController extends Controller
 
     public function destroy($id)
     {
-        Option::find($id)->delete();
-        return response(['status' => 'success', 'message' => "option has been deleted", 'data' => []], 201);
+        Quize::find($id)->delete();
+        return response(['status' => 'success', 'message' => "Quiz has been deleted", 'data' => []], 201);
         }
     }
+

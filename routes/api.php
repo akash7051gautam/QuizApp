@@ -20,11 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/apiResource', 'QuizController@index');
-Route::post('/apiResource', 'QuizController@store');
-Route::get('/apiResource/{id}', 'QuizController@show');
-Route::put('/apiResource/{id}', 'QuizController@update');
-Route::delete('/apiResource/{id}', 'QuizController@destroy');
+Route::get('/apiResource', 'QuizeController@index');
+Route::post('/apiResource', 'QuizeController@store');
+Route::get('/apiResource/{id}', 'QuizeController@show');
+Route::put('/apiResource/{id}', 'QuizeController@update');
+Route::delete('/apiResource/{id}', 'QuizeController@destroy');
 
 
 
@@ -39,3 +39,6 @@ Route::post('option','OptionController@store');
 Route::get('option/{id}','OptionController@show');
 Route::put('option/{id}','OptionController@update');
 Route::delete('option/{id}','OptionController@destroy');
+
+
+Route::get('join','JoinTableController@index');

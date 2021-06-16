@@ -4,10 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class quiz extends Model
+class Quize extends Model
 {
-    //
-    protected $table = 'quizzes';
+    protected $table = 'quizes';
     protected $fillable = ['name','status'];
-
 }

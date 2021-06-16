@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OptionResource extends JsonResource
+class QuizeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,11 @@ class OptionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'option'=>$this->option,
-            'is_correct' => $this->is_correct,
-            'created_at'=>$this->created_at->diffForHumans(),
-            'updated_at'=>$this->updated_at->diffForHumans()
+            'name' => $this->name,
+            'status' => $this->status,
+            'created_at'=>$this->created_at,
+            'updated_at'=>$this->updated_at
         ];
+
     }
 }
