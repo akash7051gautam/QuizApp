@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-app id="inspire">
+    <v-app id="inspire">{{drawer}}
       <v-navigation-drawer clipped fixed v-model="drawer" app>
         <sidebar></sidebar>
       </v-navigation-drawer>
@@ -33,5 +33,8 @@ export default {
     drawer: true
   }),
   props: ["user"],
+  methods:{
+    
+  }
 };
 </script>

@@ -1,13 +1,14 @@
 <?php
 namespace App\Http\Controllers\AdminApi;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\QuestionResource;
-use Illuminate\Http\Request;
+use App\Answer;
 use App\Question;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\QuestionResource;
 use Illuminate\Support\Facades\Validator;
-
-
+use App\Http\Resources\QuestionEditResource;
 
 class QuestionController extends Controller
 {
@@ -18,8 +19,8 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        //return auth()->user()->get();
-        return QuestionResource::collection(Question::latest()->get());
+        $questions = Question::with(['answer'])->paginate(10);
+        return QuestionResource::collection($questions);
     }
 
     /**
@@ -41,20 +42,32 @@ class QuestionController extends Controller
     public function store(Request $request)
     {
        $data=Validator::make($request->all(),[
-        'title'=>'required|unique:Questions',
-        'user_id'=>'required',
-        'type'=>'required',
-        'points'=>'required',
-        'page'=>'required'
+            'title'=>'required',
+            'type'=>'required',
+            'points'=>'required',
+            'page'=>'required'
         ]);
-        if($data->fails())
-        {
+        if($data->fails()){
             return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
-        // dd($request->all());
-         $input=Question::create($request->all());
-        return new QuestionResource($input);
-        }
+            $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['options']);            
+           // dd($data);
+            $question = Question::create($data);
+            $question_id = $question->id;
+            $options = $request->options;
+            $is_correct = $request->is_correct;
+
+            $answer = [];
+            foreach($options as $key=>$option){
+                $answer = [
+                        'answer_title' => $option,
+                        'question_id' => $question_id,
+                        'is_correct' => $is_correct[$key]
+                ];   
+                $question = Answer::create($answer);             
+            }
+            return new QuestionResource($question);
+    }
 
     /**
      * Display the specified resource.
@@ -62,10 +75,10 @@ class QuestionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        $data=Question::findOrFail($id);
-         return new QuestionResource($data);
+        $questions = Question::where(['quiz_id'=>$id])->paginate(10);
+        return QuestionResource::collection($questions);
     }
 
     /**
@@ -76,7 +89,10 @@ class QuestionController extends Controller
      */
     public function edit($id)
     {
-        //
+        $query = Question::where('id',$id);
+        $question = $query->with(['answer'])->latest()->first();
+        return response()->json($question,200);
+        //return new QuestionResource($question);
     }
 
     /**
@@ -91,13 +107,43 @@ class QuestionController extends Controller
     public function update(Request $request, $id)
     {
         $data=Validator::make($request->all(),[
-            'title'=>'unique:Questions,title,'.$id,
+            'title'=>'required',
+            'type'=>'required',
+            'points'=>'required',
+            'page'=>'required'
         ]);
-        if ($data->fails()) {
-            return response(['status' => 'error', 'message' => $data->errors()->all(), 'data' => []], 400);
+        if($data->fails()){
+            return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
-        Question::find($id)->update($request->all());
-        return response()->json(['message'=>'success'],200);
+            $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['options']); 
+            //dd($data);
+            $question = Question::find($id);
+            $question->update($data);
+
+            $question_id = $question->id;
+            $options = $request->options;
+            $is_correct = $request->is_correct;
+            $ansId = $request->ansId;
+
+            $answer = [];
+            foreach($options as $key=>$option){
+                $answer = [
+                        'answer_title' => $option,
+                        'question_id' => $question_id,
+                        'is_correct' => $is_correct[$key]
+                ];   
+                $answer = Answer::where('id',$ansId[$key])->update($answer);      
+            }
+            //return new QuestionResource($question);
+            return response()->json(['message'=>'success'],201);
+        // $data=Validator::make($request->all(),[
+        //     'title'=>'unique:Questions,title,'.$id,
+        // ]);
+        // if ($data->fails()) {
+        //     return response(['status' => 'error', 'message' => $data->errors()->all(), 'data' => []], 400);
+        // }
+        // Question::find($id)->update($request->all());
+        // return response()->json(['message'=>'success'],200);
     }
 
     /**

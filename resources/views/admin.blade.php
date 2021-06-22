@@ -22,17 +22,16 @@
 </head>
 <body>
     <div id="app">
-
         <Admin :user="{{auth()->user()->load('notifications')}}"></Admin>
     </div>
 
     <script>
         window.user = @json(
-        [
-            'user'=> auth()->user()->load('notifications'),
-            'roles'=>auth()->user()->roles,
-            'permissions'=> auth()->user()->getAllPermissions()
-        ]
+            [
+                'user'=> auth()->user()->load('notifications'),
+                'roles'=>auth()->user()->roles,
+                'permissions'=> auth()->user()->getAllPermissions()
+            ]
         );
 
     </script>

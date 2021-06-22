@@ -20,9 +20,10 @@ class AnswerController extends Controller
      */
     public function index()
     {
-        $questions = Answer::with(['question'])->latest()->get();
-        return $questions;
-        // return new AnswerResource($questions);
+        $questions = Answer::with(['question'])->latest()->paginate(10);
+        //return $questions;
+        return AnswerResource::collection($questions);
+        //return new AnswerResource($questions);
     }
 
     /**

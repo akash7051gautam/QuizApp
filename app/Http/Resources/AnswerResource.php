@@ -14,14 +14,14 @@ class AnswerResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
-
+        //return parent::toArray($request);
         return[
-            'id'=>$this->id,
-            'answer_title'=>$this->answer_title,
-           'question_id'=>$this->question_id,
-           'created_at'=>$this->created_at->diffForHumans(),
-           'updated_at'=>$this->updated_at->diffForHumans(),
-        ];
+                'id' => $this->id,
+                'question' => $this->question->title,
+                'options' => [
+                    'option' => $this->answer_title, 
+                    'is_correct' => $this->is_correct
+                ]
+            ];
     }
 }

@@ -11,7 +11,13 @@
             
             <v-dialog v-model="dialog" max-width="700px">
                 <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
-                <v-card>
+                
+                <v-form
+                ref="form"
+                v-model="valid"
+                lazy-validation
+              >
+              <v-card>
                     <v-card-title>
                         <span class="headline">{{ formTitle }}</span>
                     </v-card-title>
@@ -20,18 +26,35 @@
                         <v-container grid-list-md>
                             <v-layout wrap>
                                 <v-flex xs12 >
-                                    <v-text-field v-model="editedItem.name" label="Name"></v-text-field>
+                                    <v-text-field 
+                                      :counter="10"
+                                      required
+                                      v-model="editedItem.name" 
+                                      label="Name"
+                                    ></v-text-field>
                                 </v-flex>
                                 <v-flex xs12 >
-                                    <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
+                                    <v-text-field 
+                                      v-model="editedItem.email" 
+                                      label="Email"
+                                      ></v-text-field>
                                 </v-flex>
 
                                 <v-flex xs12 >
-                                    <v-text-field v-model="editedItem.password" label="password"></v-text-field>
+                                    <v-text-field 
+                                    v-model="editedItem.password" 
+                                    label="password"
+                                    :type="show1 ? 'text' : 'password'"
+                                    ></v-text-field>
                                 </v-flex>
 
                                 <v-flex xs12 >
-                                    <v-text-field v-model="editedItem.confirm_password" label="Confirm Password"></v-text-field>
+                                    <v-text-field 
+                                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                    v-model="editedItem.confirm_password" 
+                                    label="Confirm Password"
+                                    :type="show1 ? 'text' : 'password'"
+                                    ></v-text-field>
                                 </v-flex>
 
                                 <v-flex xs12>
@@ -68,6 +91,7 @@
                         <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
                     </v-card-actions>
                 </v-card>
+          </v-form>
             </v-dialog>
         </v-toolbar>
         <v-data-table
@@ -105,9 +129,31 @@
 </template>
 
 <script>
+  import { validationMixin } from 'vuelidate'
+  import { required, maxLength, email } from 'vuelidate/lib/validators'
+
   export default {
+    mixins: [validationMixin],
     data: () => ({
       dialog: false,
+      show1: false,
+      valid: true,
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+      ],
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+/.test(v) || 'E-mail must be valid'
+      ],
+      passwordRules:[
+        v => !!v || 'Password is required',
+        v => (v && v.length <= 8) || 'Min 8 characters',
+      ],
+      confPasswordRules:[
+        v => !!v || 'Confirm password is required',
+        v => (v && v.length <= 8) || 'Min 8 characters',
+      ],
       headers: [
         {text: 'Username', value: 'name'},
         {text: 'Email', value: 'email'},
@@ -186,6 +232,10 @@
       },
 
       save() {
+        if (this.$refs.form.validate()) {
+        //   this.snackbar = true
+        
+         // this.snackbar = true;
         if (this.editedIndex > -1) {
           Object.assign(this.tableData[this.editedIndex], this.editedItem);
 
@@ -196,6 +246,7 @@
           axios.post('/api/users/',this.editedItem).then(response=>console.log(response.data));
         }
         this.close();
+      }
       },
     },
   };

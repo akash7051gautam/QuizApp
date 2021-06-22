@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Question extends Model
 {
     protected $fillable=[
-        'title','user_id','page','type','points'
+        'title','user_id','page','type','points','quiz_id'
     ];
 
     public function answer(){
@@ -20,4 +20,9 @@ class Question extends Model
     public function user(){
         return $this->belongsTo(User::class,'id');
     }
+
+    public function quiz(){
+        return $this->belongsTo(Quiz::class);
+    }
+
 }

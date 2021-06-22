@@ -173,7 +173,8 @@
       },
 
       previewItem(item){
-        this.$router.push('/admin/qizzview')
+        console.log(item.id);
+        this.$router.push(`/admin/qizzview/${item.id}`)
       }
     },
   };

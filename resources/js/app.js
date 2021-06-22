@@ -13,15 +13,15 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import CKEditor from 'ckeditor4-vue';
 import Vuelidate from 'vuelidate'
+import VueSweetalert2 from 'vue-sweetalert2';
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.use( CKEditor );
 Vue.use(Vuelidate)
+Vue.use(VueSweetalert2);
 
 import 'vuetify/dist/vuetify.min.css'
-
-
 import Auth from './auth'
 
 Vue.prototype.$auth = new Auth(window.user);
@@ -82,11 +82,12 @@ const routes = [
         component: Qizzes
     },
     {
-        path: '/admin/qizzview',
+        path: '/admin/qizzview/:id',
         component: QizzesView
     },
     {
-        path: '/admin/question/:id',
+        // path: '/admin/question/:page/:quiz_id',
+        path: '/admin/question/:id/:quiz_id',
         component: AddQuestion
     }
 ];
