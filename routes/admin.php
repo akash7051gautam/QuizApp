@@ -19,3 +19,4 @@ Route::apiResource('questions', 'AdminApi\QuestionController');
 Route::apiResource('answers', 'AdminApi\AnswerController');
 Route::apiResource('users','AdminApi\UserController');
 Route::apiResource('useranswers','AdminApi\UserAnswerController');
+Route::apiResource('students','AdminApi\StudentController');
