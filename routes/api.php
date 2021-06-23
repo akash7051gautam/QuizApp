@@ -1,6 +1,10 @@
 <?php
 
+<<<<<<< Updated upstream
 
+=======
+use App\Http\Controllers\StudentController;
+>>>>>>> Stashed changes
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+<<<<<<< Updated upstream
 
 
 Route::get('/apiResource', 'QuizeController@index');
@@ -42,3 +47,5 @@ Route::delete('option/{id}','OptionController@destroy');
 
 
 Route::get('join','JoinTableController@index');
+=======
+>>>>>>> Stashed changes
