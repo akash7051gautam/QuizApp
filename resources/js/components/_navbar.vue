@@ -1,6 +1,6 @@
 <template>
   <v-toolbar app fixed clipped-left>
-    <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+    <v-toolbar-side-icon @click.stop="drawer = !drawer" @click='passEvent'></v-toolbar-side-icon>
     <v-toolbar-title>Admin Panel</v-toolbar-title>
     <v-spacer></v-spacer>
 
@@ -60,12 +60,12 @@
 import ImagePath from '../img/avtar.jpg'
 
 export default {
-  props: ["user"],
+  components: { },
   data: () => ({
     drawer: null,
     allNotifications: [],
     unreadNotifications: [],
-    imagePath:''
+    imagePath:'',
   }),
   props: ["user"],
   watch:{
@@ -86,6 +86,10 @@ export default {
       axios.get("/mark-all-read/" + this.user.id).then(response=>{
           this.unreadNotifications = [];
       });
+    },
+    passEvent()
+    {
+      this.$emit('toggleSideBar', true)
     }
   },
  

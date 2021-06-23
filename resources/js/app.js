@@ -49,6 +49,7 @@ import Activities from './pages/Activities'
 import Qizzes from './pages/Qizzes'
 import QizzesView from './pages/QizzesView'
 import AddQuestion from './pages/AddQuestion'
+import Student from './pages/Student'
 import ImagePath from './img/avtar.jpg'
 
 
@@ -89,6 +90,10 @@ const routes = [
         // path: '/admin/question/:page/:quiz_id',
         path: '/admin/question/:id/:quiz_id',
         component: AddQuestion
+    },
+    {
+        path: '/admin/students',
+        component: Student
     }
 ];
 
