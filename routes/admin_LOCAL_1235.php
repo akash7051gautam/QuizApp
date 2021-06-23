@@ -15,11 +15,5 @@ Route::apiResource('quizzes', 'AdminApi\QuizController')->middleware(['auth:admi
 Route::get('activities/{userId?}', 'AdminApi\ActivityController@index'); 
 
 Route::apiResource('questions', 'AdminApi\QuestionController')->middleware(['auth:admin','permission:ManageUser','role:Organization']);
-// Route::get('questions/edit/{id}', 'AdminApi\QuestionController@edit')->middleware(['auth:admin','permission:ManageUser','role:Organization']);
+Route::get('questions/edit/{id}', 'AdminApi\QuestionController@edit')->middleware(['auth:admin','permission:ManageUser','role:Organization']);
 Route::apiResource('answers', 'AdminApi\AnswerController')->middleware(['auth:admin','permission:ManageUser','role:Organization']);;
-
-// Route::apiResource('questions', 'AdminApi\QuestionController');
-// Route::apiResource('answers', 'AdminApi\AnswerController');
-Route::apiResource('users','AdminApi\UserController');
-Route::apiResource('useranswers','AdminApi\UserAnswerController');
-Route::apiResource('students','AdminApi\StudentController');
