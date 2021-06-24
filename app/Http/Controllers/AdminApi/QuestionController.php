@@ -50,23 +50,17 @@ class QuestionController extends Controller
         if($data->fails()){
             return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
-            $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['options']);            
-           // dd($data);
+            $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['answer']);                       
             $question = Question::create($data);
+            
             $question_id = $question->id;
-            $options = $request->options;
-            $is_correct = $request->is_correct;
+            $answers = $request->only('answer');
 
-            $answer = [];
-            foreach($options as $key=>$option){
-                $answer = [
-                        'answer_title' => $option,
-                        'question_id' => $question_id,
-                        'is_correct' => $is_correct[$key]
-                ];   
-                $question = Answer::create($answer);             
+            foreach( $answers['answer'] as $answer ){
+                $question->answer()->create($answer);
             }
-            return new QuestionResource($question);
+            $resp = $question->with('answer')->where('id',$question_id)->first();
+            return response()->json($resp,201);
     }
 
     /**
@@ -85,7 +79,6 @@ class QuestionController extends Controller
             ->when($request->get('param') == "question_id", function ($query) use ($id) {
                 $query->where(['id'=>$id])->with(['answer'])->latest();
             });
-
         if( $request->get('param') == "quiz_id" ){
             return QuestionResource::collection($question->get());
         }else if($request->get('param') == "question_id"){
@@ -130,28 +123,19 @@ class QuestionController extends Controller
         if($data->fails()){
             return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
-            $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['options']); 
-            //dd($data);
-            $question = Question::find($id);
-            $question->update($data);
 
-            $question_id = $question->id;
-            $options = $request->options;
-            $is_correct = $request->is_correct;
-            $ansId = $request->ansId;
-            $answer = [];
-            foreach($options as $key=>$option){ 
-                $answer = [
-                        'answer_title' => $option,
-                        'question_id' => $question_id,
-                        'is_correct' => $is_correct[$key]
-                ];
-                //dd($answer);
-                $answer = Answer::where('id',$ansId[$key])->update($answer);      
-            }
-           
-            //return new QuestionResource($question);
-            return response()->json(['message'=>'success'],201);
+        $question = $request->merge([
+                'user_id'=>auth()->user()->id,
+                'quiz_id'=>(int)$request->quiz_id
+            ])->except(['answer']);
+
+        Question::find($id)->update($question);
+
+        $answers = $request->only('answer');
+        foreach( $answers['answer'] as $answer  ){
+            Answer::where('id',$answer['id'])->update($answer);
+        }
+        return response()->json(['message'=>'success'],201);
     }
 
     /**

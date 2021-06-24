@@ -18,8 +18,9 @@
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item font-weight-bold">
+                                    <span class="mr-2">{{index+1}}.</span>
                                 <v-icon v-if="option.is_correct" small color="success mr-1">done</v-icon>
-                                    {{option.option}}
+                                    {{option.answer_title}}
                                 </li>
                             </ul>
                         </div>
@@ -63,6 +64,7 @@ export default {
     methods: {
         init(){
             axios.get(`/api/questions/${this.$route.params.id}?param=quiz_id`).then(response => {
+                console.log(response.data.data);
                 this.pages = response.data.data;
             });
         },
