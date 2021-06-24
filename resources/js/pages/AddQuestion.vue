@@ -161,7 +161,8 @@
         },
         methods: {
             init(){
-                axios.get(`/api/questions/edit/${this.$route.params.id}`).then(response => {
+                axios.get(`/api/questions/${this.$route.params.id}?param=question_id`).then(response => {
+                    console.log(response.data);
                     if(response.status == 200 && response.data.title){
                         this.edit = true;
                         this.addQuestion.points = response.data.points;
@@ -259,8 +260,8 @@
                            // this.$refs.form.reset(),
                             this.addQuestion.title = '',
                             this.addQuestion.options = [{}] ,
-                            this.options = [{option:"aaaa", is_correct:true} ],
-                            this.cancel()
+                            this.options = [{option:"aaaa", is_correct:true} ]
+                            //this.cancel()
                     }).catch(error => {
                             switch (error.response.status) {
                                 case 400:

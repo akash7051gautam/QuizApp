@@ -62,7 +62,7 @@ export default {
     },
     methods: {
         init(){
-            axios.get(`/api/questions/${this.$route.params.id}`).then(response => {
+            axios.get(`/api/questions/${this.$route.params.id}?param=quiz_id`).then(response => {
                 this.pages = response.data.data;
             });
         },

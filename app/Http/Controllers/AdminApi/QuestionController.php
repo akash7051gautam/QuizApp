@@ -77,8 +77,23 @@ class QuestionController extends Controller
      */
     public function show(Request $request,$id)
     {
-        $questions = Question::where(['quiz_id'=>$id])->paginate(10);
-        return QuestionResource::collection($questions);
+       // dd($request->get('param'));
+        $question = Question::select()
+            ->when($request->get('param') == "quiz_id", function ($query) use ($id) {
+                $query->where(['quiz_id'=>$id])->paginate(10);
+            })
+            ->when($request->get('param') == "question_id", function ($query) use ($id) {
+                $query->where(['id'=>$id])->with(['answer'])->latest();
+            });
+
+        if( $request->get('param') == "quiz_id" ){
+            return QuestionResource::collection($question->get());
+        }else if($request->get('param') == "question_id"){
+            return response()->json($question->first(),200);
+        }
+        
+        // $questions = Question::where(['quiz_id'=>$id])->paginate(10);
+        // return QuestionResource::collection($questions);
     }
 
     /**
@@ -124,26 +139,19 @@ class QuestionController extends Controller
             $options = $request->options;
             $is_correct = $request->is_correct;
             $ansId = $request->ansId;
-
             $answer = [];
-            foreach($options as $key=>$option){
+            foreach($options as $key=>$option){ 
                 $answer = [
                         'answer_title' => $option,
                         'question_id' => $question_id,
                         'is_correct' => $is_correct[$key]
-                ];   
+                ];
+                //dd($answer);
                 $answer = Answer::where('id',$ansId[$key])->update($answer);      
             }
+           
             //return new QuestionResource($question);
             return response()->json(['message'=>'success'],201);
-        // $data=Validator::make($request->all(),[
-        //     'title'=>'unique:Questions,title,'.$id,
-        // ]);
-        // if ($data->fails()) {
-        //     return response(['status' => 'error', 'message' => $data->errors()->all(), 'data' => []], 400);
-        // }
-        // Question::find($id)->update($request->all());
-        // return response()->json(['message'=>'success'],200);
     }
 
     /**
