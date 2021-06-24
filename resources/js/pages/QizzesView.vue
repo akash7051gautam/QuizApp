@@ -81,7 +81,6 @@ export default {
             fieldType.splice(index, 1);
         },
         addQuestion(){
-            //this.$router.push(`/admin/question/${this.pageNumebr}/${this.$route.params.id}`)
             this.$router.push(`/admin/question/${this.$route.params.id}/${this.$route.params.id}`)
         },
         editQuestion(pageId){
