@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\AdminApi;
 
 use App\Student;
+use App\ManagePassword;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\StudentResource;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,7 +19,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return StudentResource::collection(Student::all());
+        return StudentResource::collection(Student::with(['managePassword'])->get());
     }
 
     /**
@@ -38,11 +40,10 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->merge(['user_id'=>auth()->user()->id])->except(['statusVal','conf_password']);
         $input = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
-            'roll_no' => 'required',
+            'roll_no' => 'required|unique:students',
             'email' => 'required|unique:students',
             'status' => 'required',
             'password' => 'required'
@@ -53,8 +54,12 @@ class StudentController extends Controller
                 'message' => $input->errors()->all()
             ], 400);
         }
-        $data = Student::create($data);
-        return new StudentResource($data);
+
+        $data = $request->merge(['user_id'=>auth()->user()->id])->except(['statusVal','conf_password']);
+        $data['password'] = Hash::make($request->password);
+        $student = Student::create($data);
+        $student->managePassword()->create(['password'=>$request->input('password')]);
+        return new StudentResource($student);
     }
 
     /**

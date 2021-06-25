@@ -14,12 +14,16 @@ import VueRouter from 'vue-router'
 import CKEditor from 'ckeditor4-vue';
 import Vuelidate from 'vuelidate'
 import VueSweetalert2 from 'vue-sweetalert2';
+import Vue from 'vue';
+import VueToast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.use( CKEditor );
 Vue.use(Vuelidate)
 Vue.use(VueSweetalert2);
+Vue.use(VueToast);
 
 import 'vuetify/dist/vuetify.min.css'
 import Auth from './auth'

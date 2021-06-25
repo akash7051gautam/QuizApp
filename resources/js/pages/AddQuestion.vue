@@ -104,7 +104,7 @@
                 </div>
             </div>
 
-            <div v-for="(option, index) in options" v-if="!edit">  
+            <div v-for="(option, index) in options" v-if="!edit">
                 <div class="input-group">
                     <div class="my-2"><hr /></div>
                     <v-text-field
@@ -151,7 +151,7 @@
                         class="mr-4"
                         @click="submit"
                     >
-                    Add Question
+                        Add Question
                     </v-btn>
                 </div>
                 <div class="text-right mt-3">
@@ -161,14 +161,11 @@
                         class=""
                         @click="cancel()"
                     >
-                    Cancel
+                        Cancel
                     </v-btn>
 
-                    <v-btn
-                        color="warning"
-                        @click="resetValidation"
-                    >
-                    Reset Validation
+                    <v-btn color="warning" @click="resetValidation">
+                        Reset Validation
                     </v-btn>
                     <span class="" v-if="edit">
                         <v-btn
@@ -190,7 +187,6 @@
                             Save
                         </v-btn>
                     </span>
-                    
                 </div>
             </div>
         </v-form>
@@ -198,8 +194,8 @@
 </template>
 
 <script>
-import VueSweetalert2 from 'vue-sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
+import VueSweetalert2 from "vue-sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 export default {
     data: () => ({
@@ -208,7 +204,7 @@ export default {
             t1: "Multiple Choice",
             t2: "multiple_choice"
         },
-        editSeleted:{
+        editSeleted: {
             t1: "Multiple Choice",
             t2: "multiple_choice"
         },
@@ -256,29 +252,40 @@ export default {
         options: [
             {
                 option: ""
-            },
+            }
         ],
-        edit:false
+        edit: false
     }),
-    mounted(){
+    mounted() {
         this.addQuestion.quiz_id = this.$route.params.quiz_id;
     },
-    created(){
+    created() {
         this.init();
     },
     methods: {
-        init(){
-            this.options = [{option:''}];
-            axios.get(`/api/questions/${this.$route.params.id}?param=question_id`).then(response => {
-                if(response.status === 200 && Object.keys(response.data).length){
-                    this.editQuestion = response.data;
-                    for(var i = 0; i<=response.data.answer.length-1; i++){
-                        let obj = {option:''}
+        init() {
+            this.options = [{ option: "" }];
+            axios
+                .get(
+                    `/api/questions/${this.$route.params.id}?param=question_id`
+                )
+                .then(response => {
+                    if (
+                        response.status === 200 &&
+                        Object.keys(response.data).length
+                    ) {
+                        this.editQuestion = response.data;
+                        for (
+                            var i = 0;
+                            i <= response.data.answer.length - 1;
+                            i++
+                        ) {
+                            let obj = { option: "" };
+                        }
+                        this.edit = true;
+                        console.log(response.data);
                     }
-                    this.edit = true;
-                    console.log(response.data)
-                }
-            });
+                });
         },
         changeType(event) {
             return (this.addQuestion.type = event.t2);
@@ -293,56 +300,72 @@ export default {
         submit() {
             if (this.options.length <= 3) {
                 this.options.push({ option: "" });
-                let obj = { id: null,answer_title: "",is_correct: false,question_id: null}
+                let obj = {
+                    id: null,
+                    answer_title: "",
+                    is_correct: false,
+                    question_id: null
+                };
                 this.addQuestion.answer.push(obj);
             }
         },
         removeField(index, fieldType) {
-            if(!this.edit){
+            if (!this.edit) {
                 fieldType.splice(index, 1);
                 this.addQuestion.answer.splice(index, 1);
-            }else{
+            } else {
                 this.editQuestion.answer.splice(index, 1);
-            }            
+            }
         },
-        resetValidation(){
+        resetValidation() {
             this.showError = false;
-            this.$refs.form.resetValidation()
+            this.$refs.form.resetValidation();
         },
-        cancel(){
+        cancel() {
             this.$router.push(`/admin/qizzview/${this.$route.params.quiz_id}`);
         },
-        save(){
+        save() {
             let $chek = this.$refs.form.validate();
-            if(this.addQuestion.title == ""){
+            if (this.addQuestion.title == "") {
                 this.showError = true;
-            }else{
+            } else {
                 this.showError = false;
-                if($chek)
-                axios.post('/api/questions/',this.addQuestion).then(
-                    response=> {
-                        this.editQuestion = response.data;
-                        (response.status == 201) ? this.successMsg() : this.errorMsg(response.data.message);
-                    }
-                ).catch(error => {
-                    switch (error.response.status) {
-                        case 400:
-                                this.errorMsg(response.data.message)
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            }  
+                if ($chek)
+                    axios
+                        .post("/api/questions/", this.addQuestion)
+                        .then(response => {
+                            this.editQuestion = response.data;
+                            response.status == 201
+                                ? this.successMsg()
+                                : this.errorMsg(response.data.message);
+                        })
+                        .catch(error => {
+                            switch (error.response.status) {
+                                case 400:
+                                    this.errorMsg(response.data.message);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        });
+            }
         },
-        update(){
-            console.log(this.editQuestion)
-            axios.put(`/api/questions/${this.$route.params.id}`,this.editQuestion).then(response=> {
-                    response.status == 201 ? this.successMsg() : this.errorMsg(response.data.message);
-                }).catch(error => {
+        update() {
+            console.log(this.editQuestion);
+            axios
+                .put(
+                    `/api/questions/${this.$route.params.id}`,
+                    this.editQuestion
+                )
+                .then(response => {
+                    response.status == 201
+                        ? this.successMsg()
+                        : this.errorMsg(response.data.message);
+                })
+                .catch(error => {
                     switch (error.response.status) {
                         case 400:
-                                this.errorMsg(response.data.message)
+                            this.errorMsg(response.data.message);
                             break;
                         default:
                             break;
@@ -350,16 +373,12 @@ export default {
                 });
         },
         successMsg() {
-            this.$swal(
-                'Good job!',
-                'Question has been added',
-                'success'
-            );
+            this.$swal("Good job!", "Question has been added", "success");
         },
         errorMsg(msg) {
             this.$swal({
-                icon: 'error',
-                title: 'Oops...',
+                icon: "error",
+                title: "Oops...",
                 text: msg
             });
         }

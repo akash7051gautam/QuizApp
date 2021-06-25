@@ -59,12 +59,10 @@
                                             v-model="editedItem.conf_password"
                                             label="Confirm Password"
                                             :type="password"
-                                            :rules="
-                                            [
-                                                    v => !!v || 'Confirm password is required', 
-                                                    (this.editedItem.password === this.editedItem.conf_password) || 'Password must match'
-                                                ]
-                                            "
+                                            :rules="[
+                                                v => !!v || 'Confirm password is required', 
+                                                (this.editedItem.password === this.editedItem.conf_password) || 'Password must match'
+                                            ]"
                                         ></v-text-field>
                                     </v-flex>
                                     <v-flex xs12>
@@ -75,6 +73,10 @@
                                                 item-text="name"
                                                 @change="checkStatus($event)"
                                                 return-object
+                                                :rules="[
+                                                v => !!v || 'Status is required',
+                                                v => (v && this.editedItem.status !== '') || 'Status is required'
+                                            ]"
                                                 chips
                                         ></v-select>
                                     </v-flex>
@@ -117,6 +119,10 @@
 </template>
 
 <script>
+
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 export default {
     data: () => ({
         dialog: false,
@@ -137,18 +143,18 @@ export default {
             roll_no:"",
             email:"",
             password:"",
-            status:false,
-            statusVal:""
+            status:false
         },
+        defaultSelected: [],
         editedItem: {
-            first_name: "akash",
-            last_name: "deep",
-            email: "akash.deep@ditstek.com",
-            roll_no: "123456789",
-            password: "password",
-            conf_password: "password",
-
-            status: ''
+            first_name: "",
+            last_name: "",
+            email: "",
+            roll_no: "",
+            password: "",
+            conf_password: "",
+            status: "",
+            statusVal:[]
         },
         allStatus:[
             {name: 'active'},
@@ -165,7 +171,9 @@ export default {
             v => !!v || 'Email is required'
         ],
         roleNoRules:[
-            v => !!v || 'Roll number is required'
+            v => !!v || 'Roll number is required',
+            v => (v && v.length >= 10) || 'Roll number should be of 10 characters',
+            v => (v && v.length <= 10) || 'Roll number should be of 10 characters'
         ],
         passwordRules:[
             v => !!v || 'Password is required',
@@ -175,16 +183,28 @@ export default {
             v => !!v || 'Confirm password is required',
             v => (v && v.length >= 8) || 'Min 8 characters'
         ],
-        password: 'Password',        
+        statusRules:[
+            v => !!v || 'Status is required',
+            v => (v && this.editedItem.status !== '') || 'Status is required'
+        ],
+        password: 'Password',
+        editedIndex: -1,        
         
     }),
+    computed: {
+      formTitle() {
+        return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
+      },
+    },
     mounted(){
         this.init();
     },
     methods: {
         init(){
-            axios.get('/api/students').then(response=>{ 
-                this.tableData = response.data.data;
+            axios.get('/api/students').then(response=>{
+                if( response.status === 200 ){
+                    this.tableData = response.data.data;
+                }
             }).catch(error=>{
 
             });
@@ -192,24 +212,62 @@ export default {
         close() {
             this.dialog = false;
             this.$refs.form.reset();
+            this.editedIndex = -1;
         },
         checkStatus(e){
             (e.name == 'inActive') ? this.editedItem.status = false : this.editedItem.status = true;
         },
         save() {
-            console.log(this.editedItem);
-            if (this.$refs.form.validate()) {
-                axios.post('/api/students',this.editedItem).then(response=>{
-                    console.log(response);
-                }).catch(error=>{
-                    console.log(error);
-                });
+            if(this.editedIndex === -1){
+                if (this.$refs.form.validate()) {
+                    axios.post('/api/students',this.editedItem).then(response=>{
+                        if(response.status === 201){
+                            this.successMsg();
+                            this.tableData.push(response.data.data);
+                            this.close();
+                        }
+                    }).catch(error=>{
+                        if(error.response.status === 400){
+                            var arr = error.response.data.message;
+                            for(var i=0; i<=arr.length-1; i++){
+                                let instance = Vue.$toast.open({
+                                    message:arr[i],
+                                    type: 'error'
+                                });
+                            }
+                        }
+                    });
+                }
+            }else{
+                if (this.$refs.form.validate()) {
+                    axios.post('/api/students',this.editedItem).then(response=>{
+
+                    }).catch(error=>{
+
+                    });
+                }
             }
+            
         },
-    },
-    computed: {
-        formTitle() {
-            return this.editIndex === -1 ? "New Item" : "Edit Item";
+        editItem(item) {
+            this.editedIndex = this.tableData.indexOf(item);
+            this.editedItem = Object.assign({}, item);
+            this.editedItem.statusVal = {name:(this.editedItem.status)?'active':'inActive'}
+            this.dialog = true;
+        },
+        successMsg() {
+            this.$swal(
+                'Good job!',
+                'Student has been added',
+                'success'
+            );
+        },
+        errorMsg(msg) {
+            this.$swal({
+                icon: 'error',
+                title: 'Oops...',
+                text: msg
+            });
         }
     }
 };

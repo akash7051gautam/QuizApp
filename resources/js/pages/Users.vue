@@ -233,9 +233,7 @@
 
       save() {
         if (this.$refs.form.validate()) {
-        //   this.snackbar = true
-        
-         // this.snackbar = true;
+
         if (this.editedIndex > -1) {
           Object.assign(this.tableData[this.editedIndex], this.editedItem);
 
