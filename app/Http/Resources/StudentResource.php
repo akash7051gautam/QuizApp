@@ -24,7 +24,7 @@ class StudentResource extends JsonResource
             'email'=>$this->email,
             'password'=>$this->status,
             'status'=>$this->status,
-
+            'created_at'=>$this->created_at->diffForHumans(),
         ];
     }
 }

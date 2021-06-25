@@ -38,6 +38,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->merge(['user_id'=>auth()->user()->id])->except(['statusVal','conf_password']);
         $input = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -47,17 +48,12 @@ class StudentController extends Controller
             'password' => 'required'
         ]);
         if ($input->fails()) {
-            return response(['status' => 'error', 'message' => $input->errors()->all()], 400);
+            return response([
+                'status' => 'error',
+                'message' => $input->errors()->all()
+            ], 400);
         }
-
-        $data = Student::create();
-        $data->first_name=$request->first_name;
-        $data->last_name=$request->last_name;
-        $data->roll_no=$request->roll_no;
-        $data->email=$request->email;
-        $data->status=$request->status;
-        $data->user_id=$request->user_id;
-        $data->password=bcrypt($request->password);
+        $data = Student::create($data);
         return new StudentResource($data);
     }
 

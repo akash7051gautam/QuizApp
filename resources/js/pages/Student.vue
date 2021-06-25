@@ -67,6 +67,17 @@
                                             "
                                         ></v-text-field>
                                     </v-flex>
+                                    <v-flex xs12>
+                                        <v-select
+                                                v-model="editedItem.statusVal"
+                                                :items="allStatus"
+                                                label="Status"
+                                                item-text="name"
+                                                @change="checkStatus($event)"
+                                                return-object
+                                                chips
+                                        ></v-select>
+                                    </v-flex>
                                 </v-layout>
                             </v-container>
                         </v-card-text>
@@ -87,14 +98,11 @@
 
         <v-data-table :headers="headers" :items="tableData" class="elevation-1">
             <template slot="items" slot-scope="props">
-                <td>{{ props.item.name }}</td>
-                <td class="text-xs-right">{{ props.item.email }}</td>
-                <td class="text-xs-right" v-if="props.item.role">
-                    {{ props.item.role.name }}
-                </td>
-                <td class="text-xs-right" v-else>n/a</td>
-                <td class="text-xs-right">{{ props.item.created_at }}</td>
-                <td class="justify-center layout px-0"></td>
+                <td class="text-xs-left">{{props.item.first_name}}</td>
+                <td class="text-xs-left">{{props.item.last_name}}</td>
+                <td class="text-xs-left">{{props.item.email}}</td>
+                <td class="text-xs-left">{{props.item.roll_no}}</td>
+                <td class="text-xs-left">{{props.item.created_at}}</td>
                 <td class="justify-center layout px-0">
                     <v-icon small class="mr-2" @click="editItem(props.item)">
                         edit
@@ -115,20 +123,37 @@ export default {
         valid: true,
         editIndex: -1,
         headers: [
-            { text: "Username", value: "name" },
-            { text: "Roll No.", value: "email" },
+            { text: "First Name", value: "first_name" },
+            { text: "Last Name", value: "last_name" },
+            { text: "Email", value: "email" },
+            { text: "Roll No.", value: "roll_no" },
             { text: "Created", value: "created_at" },
             { text: "Actions", value: "name", sortable: false }
         ],
         tableData: [],
-        editedItem: {
-            first_name: "",
-            last_name: "",
-            email: "",
-            roll_no: "",
-            password: "",
-            conf_password: ""
+        addStudent:{
+            first_name:"",
+            last_name:"",
+            roll_no:"",
+            email:"",
+            password:"",
+            status:false,
+            statusVal:""
         },
+        editedItem: {
+            first_name: "akash",
+            last_name: "deep",
+            email: "akash.deep@ditstek.com",
+            roll_no: "123456789",
+            password: "password",
+            conf_password: "password",
+
+            status: ''
+        },
+        allStatus:[
+            {name: 'active'},
+            {name: 'inActive'}
+        ],
         firstNameRules:[
             v => !!v || 'First name is required',
             //v => (v && v.length <= 10) || 'Name must be less than 10 characters',
@@ -150,17 +175,35 @@ export default {
             v => !!v || 'Confirm password is required',
             v => (v && v.length >= 8) || 'Min 8 characters'
         ],
-        password: 'Password',
+        password: 'Password',        
         
     }),
+    mounted(){
+        this.init();
+    },
     methods: {
+        init(){
+            axios.get('/api/students').then(response=>{ 
+                this.tableData = response.data.data;
+            }).catch(error=>{
+
+            });
+        },
         close() {
             this.dialog = false;
             this.$refs.form.reset();
         },
+        checkStatus(e){
+            (e.name == 'inActive') ? this.editedItem.status = false : this.editedItem.status = true;
+        },
         save() {
+            console.log(this.editedItem);
             if (this.$refs.form.validate()) {
-                alert('Succes !');
+                axios.post('/api/students',this.editedItem).then(response=>{
+                    console.log(response);
+                }).catch(error=>{
+                    console.log(error);
+                });
             }
         },
     },

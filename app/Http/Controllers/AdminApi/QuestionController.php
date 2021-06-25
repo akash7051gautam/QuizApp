@@ -71,7 +71,6 @@ class QuestionController extends Controller
      */
     public function show(Request $request,$id)
     {
-       // dd($request->get('param'));
         $question = Question::select()
             ->when($request->get('param') == "quiz_id", function ($query) use ($id) {
                 $query->where(['quiz_id'=>$id])->paginate(10);
@@ -84,9 +83,6 @@ class QuestionController extends Controller
         }else if($request->get('param') == "question_id"){
             return response()->json($question->first(),200);
         }
-        
-        // $questions = Question::where(['quiz_id'=>$id])->paginate(10);
-        // return QuestionResource::collection($questions);
     }
 
     /**
