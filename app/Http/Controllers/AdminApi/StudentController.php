@@ -95,16 +95,16 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $input = Validator::make($request->all(), [
-
             'email' => 'required|unique:students,email,' . $id
-
         ]);
         if ($input->fails()) {
             return response(['status' => 'error', 'message' => $input->errors()->all()], 400);
         }
-
-        Student::find($id)->update($request->all());
-        return response()->json(['message' => 'success'], 201);
+        $data = $request->except('statusVal');
+        $student = Student::find($id);
+        $student->update($data);
+        $resp = [$student,'message'=>'Student records has been updated'];
+        return response()->json($resp, 201);
     }
 
     /**

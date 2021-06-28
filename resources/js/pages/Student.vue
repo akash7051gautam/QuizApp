@@ -222,7 +222,8 @@ export default {
                 if (this.$refs.form.validate()) {
                     axios.post('/api/students',this.editedItem).then(response=>{
                         if(response.status === 201){
-                            this.successMsg();
+                            this.successMsg("Inserted",response.data.data.message);
+                            this.close();
                             this.tableData.push(response.data.data);
                             this.close();
                         }
@@ -240,8 +241,15 @@ export default {
                 }
             }else{
                 if (this.$refs.form.validate()) {
-                    axios.post('/api/students',this.editedItem).then(response=>{
-
+                    Object.assign(
+                        this.tableData[this.editedIndex],
+                        this.editedItem
+                    );
+                    axios.put(`/api/students/${this.editedItem.id}`,this.editedItem).then(response=>{
+                        if(response.status === 201){
+                            this.successMsg("Updated",response.data.message);
+                            this.close();
+                        }
                     }).catch(error=>{
 
                     });
@@ -249,16 +257,25 @@ export default {
             }
             
         },
+        deleteItem(item) {
+            const index = this.tableData.indexOf(item);
+            confirm("Are you sure you want to delete this item?") &&
+                this.tableData.splice(index, 1);
+
+            axios
+                .delete("/api/students/" + item.id)
+                .then(response => console.log(response.data));
+        },
         editItem(item) {
             this.editedIndex = this.tableData.indexOf(item);
             this.editedItem = Object.assign({}, item);
             this.editedItem.statusVal = {name:(this.editedItem.status)?'active':'inActive'}
             this.dialog = true;
         },
-        successMsg() {
+        successMsg(action,msg) {
             this.$swal(
-                'Good job!',
-                'Student has been added',
+                action+'!',
+                    msg,
                 'success'
             );
         },

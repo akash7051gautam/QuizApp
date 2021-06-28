@@ -28,6 +28,7 @@ class StudentResource extends JsonResource
             'conf_password'=> $this->managePassword->password,
             'status'=>$this->status,
             'created_at'=>$this->created_at->diffForHumans(),
+            'message' => 'Student record has been inserted'
         ];
     }
 }
