@@ -22,11 +22,16 @@ Route::get('/mark-all-read/{user}', function (User $user) {
     return response(['message'=>'done', 'notifications'=>$user->notifications]);
 });
 
+Route::get('/student/login', 'Student\StudentLoginController@login')->name('student.login')->middleware('student');
+
 //Auth::routes();
+
+Route::get('/home', 'UserLoginController@index')->name('home');
+Route::post('/logout', 'UserLoginController@logout')->name('logout');
 
 Route::get('/admin/login', 'Auth\LoginController@showAdminLoginForm')->name('login');
 Route::post('/admin/login', 'Auth\LoginController@adminLogin');
-Route::post('/logout', 'Auth\LoginController@logout');
+//  Route::post('/logout', 'Auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
