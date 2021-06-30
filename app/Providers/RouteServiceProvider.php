@@ -39,6 +39,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
         $this->mapAdminRoutes();
+        $this->mapQuizRoutes();
 
         //
     }
@@ -89,5 +90,12 @@ class RouteServiceProvider extends ServiceProvider
         //      ->middleware('api')
         //      ->namespace($this->namespace)
         //      ->group(base_path('routes/admin.php'));
+    }
+
+    protected function mapQuizRoutes(){
+        Route::prefix('api/quiz/v1')
+             ->middleware('api')
+             ->namespace('App\Http\Controllers\Quiz\Api\v1')
+             ->group(base_path('routes/quiz.php'));
     }
 }

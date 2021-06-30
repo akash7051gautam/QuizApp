@@ -17,6 +17,9 @@ class StudentRedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        if($guard == "student" && Auth::guard($guard)->check()){
+            return redirect()->intended('/student');
+        }
         return $next($request);
     }
 }

@@ -43,6 +43,7 @@ Vue.prototype.$auth = new Auth(window.user);
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('admin', require('./components/Admin.vue').default);
+Vue.component('student', require('./components/Student.vue').default);
 
 import Dashboard from './pages/Dashboard'
 import Settings from './pages/Settings'
@@ -55,7 +56,7 @@ import QizzesView from './pages/QizzesView'
 import AddQuestion from './pages/AddQuestion'
 import Student from './pages/Student'
 import ImagePath from './img/avtar.jpg'
-
+import StudentDashboard from  './pages/StudentDashboard'
 
 const routes = [
     {
@@ -96,8 +97,21 @@ const routes = [
         component: AddQuestion
     },
     {
+        path: '/admin/question/:quiz_id',
+        component: AddQuestion
+    },
+    {
         path: '/admin/students',
         component: Student
+    },
+
+    /**
+     * Student Route
+     */
+
+     {
+        path: '/student',
+        component: StudentDashboard
     }
 ];
 

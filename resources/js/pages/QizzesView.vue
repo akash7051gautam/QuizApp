@@ -47,16 +47,17 @@
 export default {
     data: ()=>({
         pageNumebr:1,
-        pages: [
-            {
-                question: "",
-                options: {option:"", is_correct: 0},
-                quiz_id: null,
-                id:null
-            },
-        ],
+        pages:[],
+        // pages: [
+        //     {
+        //         question: "",
+        //         options: {option:"", is_correct: 0},
+        //         quiz_id: null,
+        //         id:null
+        //     },
+        // ],
         submitStatus: null,
-        buttonTxt: {add:'Add Page',edit:'Edit Page'},
+        buttonTxt: {add:'Add',edit:'Edit'},
     }),
     created(){
         this.init();
@@ -81,7 +82,7 @@ export default {
             fieldType.splice(index, 1);
         },
         addQuestion(){
-            this.$router.push(`/admin/question/${this.$route.params.id}/${this.$route.params.id}`)
+            this.$router.push(`/admin/question/${this.$route.params.id}`)
         },
         editQuestion(pageId){
             this.$router.push(`/admin/question/${pageId}/${this.$route.params.id}`);

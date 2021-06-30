@@ -13,6 +13,8 @@
 
 use App\User;
 
+//Auth::routes();
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,16 +24,25 @@ Route::get('/mark-all-read/{user}', function (User $user) {
     return response(['message'=>'done', 'notifications'=>$user->notifications]);
 });
 
-Route::get('/student/login', 'Student\StudentLoginController@login')->name('student.login')->middleware('student');
+/**
+ * Student Routes
+ */
+Route::group(['prefix'=>'/student','middleware'=>'student'],function(){
+    Route::get('/login', 'Student\StudentLoginController@login');
+    Route::post('/student/login', 'Student\StudentLoginController@studentlogin')->name('student.login');
+});
+Route::group(['prefix'=>'/student','middleware'=>'auth:student'],function(){
+    Route::get('/', 'Student\StudentController@index');
+    Route::post('/logout', 'Student\StudentLoginController@logout')->name('student.logout');
+});
+//Route::any('/student/{any?}', 'Student\StudentController@index')->where('any','.*')->middleware('auth:admin');
 
-//Auth::routes();
-
-Route::get('/home', 'UserLoginController@index')->name('home');
-Route::post('/logout', 'UserLoginController@logout')->name('logout');
-
+/**
+ * Admin Routes
+ */
 Route::get('/admin/login', 'Auth\LoginController@showAdminLoginForm')->name('login');
 Route::post('/admin/login', 'Auth\LoginController@adminLogin');
-//  Route::post('/logout', 'Auth\LoginController@logout');
+Route::post('/logout', 'Auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index')->name('home');
 

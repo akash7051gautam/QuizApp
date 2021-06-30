@@ -4,14 +4,12 @@
             <div class="row" v-if="!edit">
                 <div class="col align-self-start">
                     <v-select
-                        item-text="t1"
-                        item-value="t2"
-                        v-model="editSeleted"
+                        v-model="addQuestion.type"
                         :items="questionType"
-                        :rules="[v => !!v || 'Question type is required']"
+                        item-text="name"
                         return-object
-                        key="componentKey"
-                        v-on:change="changeType($event)"
+                        :rules="[v => !!v || 'Status is required']"
+                        label="Type"
                         solo
                     >
                     </v-select>
@@ -23,6 +21,7 @@
                         min="0"
                         type="number"
                         label="Points"
+                        :rules="[v => !!v || 'Point is required']"
                     ></v-text-field>
                 </div>
             </div>
@@ -30,10 +29,9 @@
             <div class="row" v-if="edit">
                 <div class="col align-self-start">
                     <v-select
-                        item-text="t1"
-                        item-value="t2"
-                        v-model="defaultSelected"
+                        v-model="editQuestion.type"
                         :items="questionType"
+                        item-text="name"
                         :rules="[v => !!v || 'Question type is required']"
                         return-object
                         key="componentKey"
@@ -84,20 +82,18 @@
                             id=""
                         /><small class="mt-3">Correct</small>
                     </div>
-                    <span class="mt-3">
+                    <span class="mt-3 ml-2">
                         <svg
                             v-show="editQuestion.answer.length > 1"
                             @click="removeField(index, answer)"
                             xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
+                            fill="#fa314a"
+                            viewBox="0 0 30 30"
                             width="24"
                             height="24"
-                            class="ml-2 cursor-pointer"
                         >
-                            <path fill="none" d="M0 0h24v24H0z" />
                             <path
-                                fill="#ed1140"
-                                d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z"
+                                d="M 13 3 A 1.0001 1.0001 0 0 0 11.986328 4 L 6 4 A 1.0001 1.0001 0 1 0 6 6 L 24 6 A 1.0001 1.0001 0 1 0 24 4 L 18.013672 4 A 1.0001 1.0001 0 0 0 17 3 L 13 3 z M 6 8 L 6 24 C 6 25.105 6.895 26 8 26 L 22 26 C 23.105 26 24 25.105 24 24 L 24 8 L 6 8 z"
                             />
                         </svg>
                     </span>
@@ -165,7 +161,7 @@
                     </v-btn>
 
                     <v-btn color="warning" @click="resetValidation">
-                        Reset Validation
+                        Reset Form
                     </v-btn>
                     <span class="" v-if="edit">
                         <v-btn
@@ -200,29 +196,22 @@ import "sweetalert2/dist/sweetalert2.min.css";
 export default {
     data: () => ({
         valid: false,
-        defaultSelected: {
-            t1: "Multiple Choice",
-            t2: "multiple_choice"
-        },
-        editSeleted: {
-            t1: "Multiple Choice",
-            t2: "multiple_choice"
-        },
+        // defaultSelected: {
+        //     t1: "Multiple Choice",
+        //     t2: "multiple_choice"
+        // },
+        defaultSelected: [],
+        editSeleted: [],
         questionType: [
-            {
-                t1: "Single Choice",
-                t2: "single_choice"
-            },
-            {
-                t1: "Multiple Choice",
-                t2: "multiple_choice"
-            }
+            { name: "Single Type" },
+            { name: "Multiple Type" },
+            { name: "Input Type" }
         ],
         addQuestion: {
             page: 1,
             quiz_id: null,
             title: "",
-            points: 0,
+            points: "",
             type: "",
             answer: [
                 {
@@ -237,8 +226,8 @@ export default {
             page: 1,
             quiz_id: null,
             title: "",
-            points: 0,
-            type: "",
+            points: "",
+            type: { name: "Single Type" },
             answer: [
                 {
                     id: null,
@@ -283,7 +272,6 @@ export default {
                             let obj = { option: "" };
                         }
                         this.edit = true;
-                        console.log(response.data);
                     }
                 });
         },
@@ -336,8 +324,11 @@ export default {
                         .then(response => {
                             this.editQuestion = response.data;
                             response.status == 201
-                                ? this.successMsg()
+                                ? this.$swal('Inserted', 'Question has been inserted', "success")
                                 : this.errorMsg(response.data.message);
+                            this.$router.push(`/admin/question/${response.data.id}/${response.data.quiz_id}`);
+                            this.edit = true;
+                            this.init(); 
                         })
                         .catch(error => {
                             switch (error.response.status) {
@@ -358,9 +349,13 @@ export default {
                     this.editQuestion
                 )
                 .then(response => {
-                    response.status == 201
-                        ? this.successMsg()
-                        : this.errorMsg(response.data.message);
+                    if(response.status == 201){
+                        this.successMsg('Updated!',response.data.message)
+                    }
+                    // console.log(response.status)
+                    // (response.status == 201)
+                    //     ? this.successMsg()
+                    //     : this.errorMsg(response.data.message);
                 })
                 .catch(error => {
                     switch (error.response.status) {
@@ -372,8 +367,8 @@ export default {
                     }
                 });
         },
-        successMsg() {
-            this.$swal("Good job!", "Question has been added", "success");
+        successMsg(status,msg) {
+            this.$swal(status, msg, "success");
         },
         errorMsg(msg) {
             this.$swal({

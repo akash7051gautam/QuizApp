@@ -50,7 +50,8 @@ class QuestionController extends Controller
         if($data->fails()){
             return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
-            $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['answer']);                       
+            $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['answer']);
+            $data['type'] = $request->type['name'];                    
             $question = Question::create($data);
             
             $question_id = $question->id;
@@ -60,6 +61,7 @@ class QuestionController extends Controller
                 $question->answer()->create($answer);
             }
             $resp = $question->with('answer')->where('id',$question_id)->first();
+            //return response()->json(['status'=>'success','message'=>'Question has been Inserted'],201);
             return response()->json($resp,201);
     }
 
@@ -110,6 +112,7 @@ class QuestionController extends Controller
 
     public function update(Request $request, $id)
     {
+        //dd($request->all());
         $data=Validator::make($request->all(),[
             'title'=>'required',
             'type'=>'required',
@@ -124,14 +127,14 @@ class QuestionController extends Controller
                 'user_id'=>auth()->user()->id,
                 'quiz_id'=>(int)$request->quiz_id
             ])->except(['answer']);
-
-        Question::find($id)->update($question);
+      //  $question['type'] = $request->type['name'];
+        $update = Question::find($id)->update($question);
 
         $answers = $request->only('answer');
         foreach( $answers['answer'] as $answer  ){
             Answer::where('id',$answer['id'])->update($answer);
         }
-        return response()->json(['message'=>'success'],201);
+        return response()->json(['status'=>'success','message'=>'Question has been updated'],201);
     }
 
     /**
