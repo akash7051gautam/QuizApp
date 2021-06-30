@@ -276,7 +276,7 @@ export default {
                 });
         },
         changeType(event) {
-            return (this.addQuestion.type = event.t2);
+            return (this.editQuestion.type = event.name);
         },
         checkCorrect(e, index) {
             if (event.target.checked) {
