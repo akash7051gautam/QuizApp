@@ -57,6 +57,7 @@ import AddQuestion from './pages/AddQuestion'
 import Student from './pages/Student'
 import ImagePath from './img/avtar.jpg'
 import StudentDashboard from  './pages/StudentDashboard'
+import EditQuestion from './pages/EditQuestion'
 
 const routes = [
     {
@@ -91,14 +92,18 @@ const routes = [
         path: '/admin/qizzview/:id',
         component: QizzesView
     },
-    {
-        // path: '/admin/question/:page/:quiz_id',
-        path: '/admin/question/:id/:quiz_id',
-        component: AddQuestion
-    },
+    // {
+    //     // path: '/admin/question/:page/:quiz_id',
+    //     path: '/admin/question/:id/:quiz_id',
+    //     component: AddQuestion
+    // },
     {
         path: '/admin/question/:quiz_id',
         component: AddQuestion
+    },
+    {
+        path: '/admin/question/edit/:id',
+        component: EditQuestion
     },
     {
         path: '/admin/students',
