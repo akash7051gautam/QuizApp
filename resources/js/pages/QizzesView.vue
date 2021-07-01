@@ -85,7 +85,7 @@ export default {
             this.$router.push(`/admin/question/${this.$route.params.id}`)
         },
         editQuestion(pageId){
-            this.$router.push(`/admin/question/${pageId}/${this.$route.params.id}`);
+            this.$router.push(`/admin/question/edit/${this.$route.params.id}`);
         }   
     }
 }

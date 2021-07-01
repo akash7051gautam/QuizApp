@@ -51,7 +51,7 @@ class QuestionController extends Controller
             return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
             $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['answer']);
-            $data['type'] = $request->type['name'];                    
+            //$data['type'] = $request->type['name'];                    
             $question = Question::create($data);
             
             $question_id = $question->id;
