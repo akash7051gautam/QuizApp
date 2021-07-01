@@ -2,12 +2,13 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Model;
+use App\Quiz;
 use Faker\Generator as Faker;
 
-$factory->define(Model::class, function (Faker $faker) {
+$factory->define(Quiz::class, function (Faker $faker) {
     return [
-        'name'=>$this->faker->text(50),
-        'status'=>$this->faker->text(100)
+        'name' => $faker->name,
+        'user_id' => 2,
+        'status' => $faker->randomElement(['Open', 'In Design']),
     ];
 });

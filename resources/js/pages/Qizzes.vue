@@ -57,6 +57,13 @@
                 <td class="text-xs-right">{{ props.item.status }}</td>
                 <td class="text-xs-right">{{ props.item.created_at }}</td>
                 <td class="justify-center layout px-0">
+                    <v-icon 
+                      small
+                      class="mr-2"
+                      @click="previewItem(props.item)"
+                    >
+                      visibility
+                    </v-icon>
                     <v-icon
                             small
                             class="mr-2"
@@ -94,6 +101,7 @@
       allStatus:[],
       allPermissions:[],
       editedItem: {
+        id:'',
         name: '',
         status: '',
         created_at: '',
@@ -103,7 +111,7 @@
         status: '',
         created_at: '',
       },
-
+      index:''
     }),
 
     computed: {
@@ -127,7 +135,6 @@
         axios.get('/api/quizzes').then(response => {
             this.tableData = response.data.data;
             this.allStatus = Object.assign(['Open','In Design']);
-            console.log(this.allStatus);
         });
       },
 
@@ -154,16 +161,26 @@
       },
 
       save() {
-        if (this.editedIndex > -1) { 
+        if (this.editedIndex > -1) {
          var test = Object.assign(this.tableData[this.editedIndex], this.editedItem);
-          axios.put('/api/quizzes/'+this.editedItem.id,this.editedItem).then(response=>console.log(response.data));
+          axios.put('/api/quizzes/'+this.editedItem.id,this.editedItem).then(
+            response=>console.log(response.data.quiz),
+            //this.index
+          );
         } else {
-          this.tableData.push(this.editedItem);
-
-          axios.post('/api/quizzes/',this.editedItem).then(response=>console.log(response.data));
+          axios.post('/api/quizzes/',this.editedItem).then(response=>{
+                this.tableData.push(response.data.quiz);
+            }
+          );
         }
         this.close();
       },
+
+      previewItem(item){
+        //console.log(`/admin/qizzview/${item.id}`);return;
+        this.index = item.index;
+        this.$router.push(`/admin/qizzview/${item.id}`)
+      }
     },
   };
 </script>

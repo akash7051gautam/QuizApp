@@ -6,6 +6,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class StudentResource extends JsonResource
 {
+    // public function password(){
+    //     return $this->managePassword();
+    // }
     /**
      * Transform the resource into an array.
      *
@@ -14,16 +17,18 @@ class StudentResource extends JsonResource
      */
     public function toArray($request)
     {
+        // return parent::toArray($request);
         return[
-            'id' => $this->id,
-            'roll_no'=>$this->roll_no,
-            'email'=>$this->email,
+            'id'=>$this->id,
             'first_name'=>$this->first_name,
             'last_name'=>$this->last_name,
-            'password'=>$this->password,
-            'user_id'=>$this->user_id,
-            'status'=>$this->status
-            
+            'roll_no'=>$this->roll_no,
+            'email'=>$this->email,
+            'password'=> $this->managePassword->password,
+            'conf_password'=> $this->managePassword->password,
+            'status'=>$this->status,
+            'created_at'=>$this->created_at->diffForHumans(),
+            'message' => 'Student record has been inserted'
         ];
-}
+    }
 }

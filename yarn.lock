@@ -6299,7 +6299,12 @@
   "resolved" "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   "version" "1.9.1"
 
-"vue@*", "vue@^2.5.17", "vue@^2.5.18", "vue@>= 2.5 < 3":
+"vue-toast-notification@^0.6.2":
+  "integrity" "sha512-fIsgALA3yQAtTnZjyUg5Y1tbVrYkLNBCET/ZvvDTS7tnmaWz8L1IzkESrRs1KIiqIGRVbBbiZAzUImrVBEziDA=="
+  "resolved" "https://registry.npmjs.org/vue-toast-notification/-/vue-toast-notification-0.6.2.tgz"
+  "version" "0.6.2"
+
+"vue@*", "vue@^2.0.0", "vue@^2.5.17", "vue@^2.5.18", "vue@>= 2.5 < 3":
   "integrity" "sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ=="
   "resolved" "https://registry.npmjs.org/vue/-/vue-2.6.10.tgz"
   "version" "2.6.10"

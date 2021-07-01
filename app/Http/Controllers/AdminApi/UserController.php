@@ -16,8 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where(['is_admin'=>false])->get();
-        return  UserResource::collection($users);
+         $users = User::where(['is_admin'=>false])->get();
+         return  UserResource::collection($users);
     }
 
 
@@ -52,7 +52,10 @@ class UserController extends Controller
         return response(['message'=>'User Created', 'user'=>$user]);
     }
 
-
+        public function show($id)
+    {
+       
+    }
     /**
      * Update the specified resource in storage.
      *

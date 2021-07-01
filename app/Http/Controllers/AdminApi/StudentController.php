@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\AdminApi;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\StudentResource;
 use App\Student;
+use App\ManagePassword;
 use Illuminate\Http\Request;
-use Validator;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\StudentResource;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -17,8 +19,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $data = Student::latest()->paginate(10);
-        return StudentResource::collection($data);
+        return StudentResource::collection(Student::with(['managePassword'])->get());
     }
 
     /**
@@ -39,25 +40,27 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $data=Validator::make($request->all(),[
-            'roll_no'=>'required',
-             'email'=>'required',
-             'first_name'=>'required',
-             'last_name'=>'required',
-             'password'=>'required',
-             'user_id'=>'required',
-             'status'=>'required',
-
-           ]);
-    
-            if($data->fails())
-            {
-                return response(['status'=>'error','message'=>$data->errors()->all()],400);
-            }
-    
-            $input=Student::create($request->all());
-            return new StudentResource($input);
+        $input = Validator::make($request->all(), [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'roll_no' => 'required|unique:students',
+            'email' => 'required|unique:students',
+            'status' => 'required',
+            'password' => 'required'
+        ]);
+        if ($input->fails()) {
+            return response([
+                'status' => 'error',
+                'message' => $input->errors()->all()
+            ], 400);
         }
+
+        $data = $request->merge(['user_id'=>auth()->user()->id])->except(['statusVal','conf_password']);
+        $data['password'] = Hash::make($request->password);
+        $student = Student::create($data);
+        $student->managePassword()->create(['password'=>$request->input('password')]);
+        return new StudentResource($student);
+    }
 
     /**
      * Display the specified resource.
@@ -67,8 +70,8 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $data=Student::find($id);
-        return new StudentResource($data);
+        $get = Student::find($id);
+        return new StudentResource($get);
     }
 
     /**
@@ -91,24 +94,17 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $data=Validator::make($request->all(),[
-            'roll_no'=>'required',
-             'email'=>'required|unique:students,email,'.$id,
-             'first_name'=>'required',
-             'last_name'=>'required',
-             'password'=>'required',
-             'user_id'=>'required',
-             'status'=>'required',
-
-           ]);
-    
-            if($data->fails())
-            {
-                return response(['status'=>'error','message'=>$data->errors()->all()],400);
-            }
-        $data=Student::find($id)->update($request->all());
-        return response(['status'=>'success','message'=>'Updated Successfully'],200);
+        $input = Validator::make($request->all(), [
+            'email' => 'required|unique:students,email,' . $id
+        ]);
+        if ($input->fails()) {
+            return response(['status' => 'error', 'message' => $input->errors()->all()], 400);
+        }
+        $data = $request->except('statusVal');
+        $student = Student::find($id);
+        $student->update($data);
+        $resp = [$student,'message'=>'Student records has been updated'];
+        return response()->json($resp, 201);
     }
 
     /**
@@ -120,6 +116,6 @@ class StudentController extends Controller
     public function destroy($id)
     {
         Student::find($id)->delete();
-        return response(['status' => 'success', 'message' => "Student has been deleted", 'data' => []], 201);
+        return response(['status' => 'success', 'message' => 'Student has been Deleted', 'data' => []], 201);
     }
 }

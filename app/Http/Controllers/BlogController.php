@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Blog;
 use App\Category;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Resources\BlogResource;
 use Illuminate\Support\Facades\Gate;
@@ -48,7 +49,7 @@ class BlogController extends Controller
 
         $input= $request->all();
 
-        $input['slug']= str_slug($request->title);
+        $input['slug']= Str::slug($request->title);
 
         if($request->filled('published_at')) {
             $input['published_at'] = Carbon::parse($request->published_at);
@@ -78,7 +79,7 @@ class BlogController extends Controller
 
         $resize = Image::make($request->file('featured_image'))->resize(800, 600)->encode('jpg');
 
-        $fileName = str_random(10) . '.jpg';
+        $fileName = Str::random(10) . '.jpg';
 
         $filePath = 'featured_image/' . $fileName;
 
@@ -138,7 +139,7 @@ class BlogController extends Controller
         $input = $request->all();
 
         if ($request->filled('title')) {
-            $input['slug'] = str_slug($request->title);
+            $input['slug'] = Str::slug($request->title);
         }
 
         if ($request->filled('published_at')) {

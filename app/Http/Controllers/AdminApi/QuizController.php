@@ -18,7 +18,9 @@ class QuizController extends Controller
      */
     public function index()
     {
-        return new QuizResource( Quiz::latest()->get() );
+        //dd(Auth::user());
+        $quiz = Quiz::where('user_id',Auth::user()->id)->latest()->get();
+        return new QuizResource( $quiz );
     }
 
     /**
@@ -46,7 +48,7 @@ class QuizController extends Controller
          $quiz  = Quiz::create([
              'name'=> $request->name,
              'status'=> $request->status,
-             //'user_id' => 
+             'user_id' => Auth::user()->id
          ]);
          
  
