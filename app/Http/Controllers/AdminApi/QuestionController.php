@@ -145,6 +145,7 @@ class QuestionController extends Controller
      */
     public function destroy($id)
     {
+        Question::find($id)->answer()->delete();
         Question::find($id)->delete();
         return response(['status' => 'error', 'message' => "Question has been deleted", 'data' => []], 201);
     }

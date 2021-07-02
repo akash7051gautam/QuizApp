@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Quiz;
 use App\Question;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,10 @@ class Answer extends Model
     public function question(){
         return $this->belongsTo(Question::class);
     }
+
+    // public function quiz(){
+    //     return $this->belongsTo(Quiz::class);
+    // }
 
     // public function getOptionAttribute(){
     //     return $this->answer_title;
