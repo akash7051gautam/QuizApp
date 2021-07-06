@@ -1,26 +1,30 @@
 <template>
     <div>
         <div class="card my-3" v-for="(page,index) in pages" style="width: 50rem;">
+            
             <div class="card-header">
-                Page {{index+1}}
+                Question {{index+1}}
+                <p class="float-right">Points: 1</p>
                 <button v-if="!page.options" type="button" class="close" aria-label="Close"  @click="removePage(index, pages)">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="card-body">
                 <p class="m-4">
-                    <div v-html="page.question"></div>
+                    <h3 v-html="page.question"></h3>
                 </p>    
-                <strong class="mx-4" v-if="page.options">Options: </strong>
+                <strong class="mx-4" v-if="page.options && page.type !== 'Input Type'">Options: </strong>
+                <strong class="mx-4" v-if="page.options && page.type == 'Input Type'">Answer: </strong>
                 <div class="card m-4" v-if="page.options">
                     
                     <div v-for="(option,index) in page.options">
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item font-weight-bold">
-                                    <span class="mr-2">{{index+1}}.</span>
-                                <v-icon v-if="option.is_correct" small color="success mr-1">done</v-icon>
+                                    <span class="mr-2" v-if="page.type !=='Input Type'">{{index+1}}.</span>
                                     {{option.answer_title}}
+                                <v-icon v-if="option.is_correct" small color="success mr-1">check_circle_outline</v-icon>
+                                    
                                 </li>
                             </ul>
                         </div>
@@ -32,13 +36,15 @@
                 </span>
                 <span class=""v-else>
                     <button class="btn btn-success mx-4" @click="editQuestion(page.id)">{{buttonTxt.edit}}</button>
+                    <button class="btn btn-danger" @click="deleteQuestion(page.id,index)">Delete</button>
                 </span>
+                <p class="text-right font-weight-bold">{{page.type}}</p>
                 
             </div>
         </div>
 
         <div class="text-center my-2">
-            <button center class="btn btn-primary" @click="addPage()">Add Page</button>
+            <button center class="btn btn-primary" @click="addPage()">Add Question</button>
         </div>
     </div>
 </template>
@@ -84,8 +90,14 @@ export default {
         addQuestion(){
             this.$router.push(`/admin/question/${this.$route.params.id}`)
         },
-        editQuestion(pageId){
-            this.$router.push(`/admin/question/edit/${this.$route.params.id}`);
+        editQuestion(id){
+            this.$router.push(`/admin/question/edit/${id}`);
+        },
+        deleteQuestion(id,index){
+            
+            axios.delete(`/api/questions/${id}`).then(response=>{
+                this.pages.splice(index, 1);
+            });
         }   
     }
 }

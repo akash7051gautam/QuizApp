@@ -4,6 +4,7 @@
             <div class="row">
                 <div class="col align-self-start">
                     <v-select
+                        disabled
                         v-model="editQuestion.type"
                         :items="questionType"
                         item-text="name"
@@ -215,7 +216,7 @@ export default {
             
         },
         update() {
-            console.log(this.editQuestion);
+            console.log(this.editQuestion);//return;
             this.$refs.form.validate();
             if (this.editQuestion.title == "") {
                 this.showError = true;
@@ -243,6 +244,9 @@ export default {
                     }
                 });
             }
+        },
+        cancel() {
+            this.$router.push(`/admin/qizzview/${this.editQuestion.quiz_id}`);
         },
         successMsg(status, msg) {
             this.$swal(status, msg, "success");

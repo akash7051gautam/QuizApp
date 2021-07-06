@@ -16,7 +16,12 @@ class CreateQuestionsTable extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('quiz_id');
+            $table->foreign('quiz_id')->references('id')->on('quizzes')->onDelete('cascade');
             $table->text('title');
+            $table->enum('type',['Single Type','Multiple Type','Input Type']);
+            $table->unsignedInteger('points');
+            $table->string('page');
             $table->timestamps();
         });
     }
