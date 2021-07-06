@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnQuizIdIntoQuestionsTable extends Migration
+class AddForeginKeyQuestionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddColumnQuizIdIntoQuestionsTable extends Migration
     public function up()
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->unsignedBigInteger('quiz_id')->after('user_id');
+            $table->foreign('quiz_id')->references('id')->on('quizzes')->onDelete('cascade');
         });
     }
 
@@ -26,7 +26,7 @@ class AddColumnQuizIdIntoQuestionsTable extends Migration
     public function down()
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->dropColumn('quiz_id');
+            $table->dropForeign(['quiz_id']);
         });
     }
 }

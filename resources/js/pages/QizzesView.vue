@@ -1,10 +1,9 @@
 <template>
     <div>
         <div class="card my-3" v-for="(page,index) in pages" style="width: 50rem;">
-            
             <div class="card-header">
                 Question {{index+1}}
-                <p class="float-right">Points: 1</p>
+                <p class="float-right" v-if="page.points">Points: 1</p>
                 <button v-if="!page.options" type="button" class="close" aria-label="Close"  @click="removePage(index, pages)">
                     <span aria-hidden="true">&times;</span>
                 </button>

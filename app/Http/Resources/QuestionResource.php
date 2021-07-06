@@ -23,6 +23,7 @@ class QuestionResource extends JsonResource
            'question'=>$this->title,
            'options' => $this->answer,
            'type' => $this->type,
+           'points' => $this->points,
            'created_at' => $this->created_at
         ];
     }
