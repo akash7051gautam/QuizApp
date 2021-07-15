@@ -14,7 +14,7 @@ class AddColumnTypeIntoQuestionsTable extends Migration
     public function up()
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->enum('type',['Single Type','Multiple Type','Input Type'])->after('title');
+            $table->enum('type',["Paragraph", "Multiple Choice", "Check Box"])->after('title');
             $table->unsignedInteger('points')->after('title');
         });
     }

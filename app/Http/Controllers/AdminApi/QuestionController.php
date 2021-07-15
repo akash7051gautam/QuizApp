@@ -45,20 +45,24 @@ class QuestionController extends Controller
             'title'=>'required',
             'type'=>'required',
             'points'=>'required',
-            'page'=>'required'
+            'page'=>'required',
+            'quiz_id'=>'required'
         ]);
         if($data->fails()){
             return response(['status'=>'error','message'=>$data->errors()->all()],400);
         }
             $data = $request->merge(['user_id'=>auth()->user()->id,'quiz_id'=>(int)$request->quiz_id])->except(['answer']);
-            //$data['type'] = $request->type['name'];                    
+            //$data = $request->merge(['user_id'=>1,'quiz_id'=>(int)$request->quiz_id])->except(['answer']);
+
             $question = Question::create($data);
             
             $question_id = $question->id;
-            $answers = $request->only('answer');
-
-            foreach( $answers['answer'] as $answer ){
-                $question->answer()->create($answer);
+            if($request->type !== 'Paragraph'){
+                $answers = $request->only('answer');
+            
+                foreach( $answers['answer'] as $answer ){
+                    $question->answer()->create($answer);
+                }
             }
             $resp = $question->with('answer')->where('id',$question_id)->first();
             //return response()->json(['status'=>'success','message'=>'Question has been Inserted'],201);

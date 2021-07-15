@@ -71,36 +71,94 @@
                             </v-flex>
                             
                         </v-layout>
-                        
-                        <v-layout row wrap v-for="(option, index) in options">
-                            <v-flex xs1 class="mt-1">
+
+                        <v-layout row wrap>
+                            <v-flex xs1 class="mt-0" v-if="addQuestion.type == 'Check Box' "> 
+                                <v-checkbox
+                                    v-model="addQuestion.answer[0].answer_title"
+                                    label=""
+                                    color="secondary"
+                                    value="red"
+                                    hide-details
+                                    class="mb-5"
+                                ></v-checkbox>
+                                <v-checkbox
+                                    v-model="addQuestion.answer[1].answer_title"
+                                    label=""
+                                    color="secondary"
+                                    value="red"
+                                    hide-details
+                                    class="mb-5"
+                                ></v-checkbox>
+                                <v-checkbox
+                                    v-model="addQuestion.answer[2].answer_title"
+                                    label=""
+                                    color="secondary"
+                                    value="red"
+                                    hide-details
+                                    class="mb-5"
+                                ></v-checkbox>
+                                <v-checkbox
+                                    v-model="addQuestion.answer[3].answer_title"
+                                    label=""
+                                    color="secondary"
+                                    value="red"
+                                    hide-details
+                                    class=""
+                                ></v-checkbox>
+                            </v-flex>
+                            <v-flex xs1 v-if="addQuestion.type == 'Multiple Choice' ">
                                 <v-radio-group>
                                     <v-radio
-                                        v-for="n in 1"
-                                        :key="index"
-                                        :value="n"
-                                        name="test"
+                                        label=""
+                                        color="secondary"
+                                        value="option1"
+                                        class="mb-5"
                                     ></v-radio>
+                                <v-radio
+                                    label=""
+                                    color="secondary"
+                                    value="option2"
+                                    class="mb-5"
+                                ></v-radio>
+                                <v-radio
+                                    label=""
+                                    color="secondary"
+                                    value="option3"
+                                    class="mb-5"
+                                ></v-radio>
+                                <v-radio
+                                    label=""
+                                    color="secondary"
+                                    value="option4"
+                                    class="mt-0"
+                                ></v-radio>
                                 </v-radio-group>
                             </v-flex>
-                            <v-flex xs10>
+                            <v-flex xs11 class="mt-2" v-if="addQuestion.type !== 'Paragraph' ">
                                 <v-text-field
+                                    v-model="addQuestion.answer[0].answer_title"
                                     label="Option 1"
                                     :rules="[v => !!v || 'Option is required']"
                                 ></v-text-field>
-                            </v-flex>
-                            <v-flex xs1>
-                                <v-btn flat icon color="grey" class="mt-4">
-                                    <v-icon>close</v-icon>
-                                </v-btn>
+                                <v-text-field
+                                    v-model="addQuestion.answer[1].answer_title"
+                                    label="Option 2"
+                                    :rules="[v => !!v || 'Option is required']"
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="addQuestion.answer[2].answer_title"    
+                                    label="Option 3"
+                                    :rules="[v => !!v || 'Option is required']"
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="addQuestion.answer[3].answer_title"
+                                    label="Option 4"
+                                    :rules="[v => !!v || 'Option is required']"
+                                ></v-text-field>
                             </v-flex>
                         </v-layout>
-    
-                        <v-layout row wrap>
-                            <v-btn @click='add' fab dark color="dark" small :disabled="disabled">
-                                <v-icon dark>add</v-icon>
-                            </v-btn>
-                        </v-layout>
+
                         <v-divider class="mx-0"></v-divider>
     
                         <v-btn color="success" rounded @click="save()">Save</v-btn>
@@ -125,8 +183,26 @@ export default {
             quiz_id: null,
             title: "",
             points: "",
-            type: "",
+            type: "Multiple Choice",
             answer: [
+                {
+                    id: null,
+                    answer_title: "",
+                    is_correct: false,
+                    question_id: null
+                },
+                {
+                    id: null,
+                    answer_title: "",
+                    is_correct: false,
+                    question_id: null
+                },
+                {
+                    id: null,
+                    answer_title: "",
+                    is_correct: false,
+                    question_id: null
+                },
                 {
                     id: null,
                     answer_title: "",
@@ -134,8 +210,12 @@ export default {
                     question_id: null
                 }
             ]
-        }
+        },
+        radios:null
     }),
+    mounted() {
+        this.addQuestion.quiz_id = this.$route.params.quiz_id;
+    },
     methods: {
         add() {
             if (this.options.length <= 3) {
@@ -151,9 +231,31 @@ export default {
                 this.disabled = true;
             }
         },
+        unselect($event){
+            console.log($event);
+        },
         save(){
-            console.log(this.addQuestion);
+            console.log(this.addQuestion); return;
             this.$refs.form.validate()
+            axios.post("/api/questions/", this.addQuestion).then(response => {
+                console.log(response);
+                response.status == 201 ? this.$swal(
+                            "Inserted",
+                            "Question has been inserted",
+                            "success"
+                        )
+                    : this.errorMsg(response.data.message);
+                    this.cancel();
+            }).catch(error => {
+                console.log(error)
+                    // switch (error.response.status) {
+                    //     case 400:
+                    //         this.errorMsg(response.data.message);
+                    //         break;
+                    //     default:
+                    //         break;
+                    // }
+                });
         }
     },
 };
